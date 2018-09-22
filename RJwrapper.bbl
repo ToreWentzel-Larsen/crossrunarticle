@@ -1,0 +1,45 @@
+\begin{thebibliography}{5}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Anh{\o}j(2015)]{Anhoej:2015}
+J.~Anh{\o}j.
+\newblock Diagnostic value of run chart analysis: Using likelihood ratios to
+  compare run chart rules on simulated data series.
+\newblock \emph{PLoS ONE}, 10\penalty0 (3):\penalty0 e0121349, 2015.
+\newblock URL \url{https://doi.org/10.1371/journal.pone.0121349}.
+
+\bibitem[Fazekas et~al.(2010)Fazekas, Kar{\'a}csony, and Libor]{Fazekas:2010}
+I.~Fazekas, Z.~Kar{\'a}csony, and Z.~Libor.
+\newblock Diagnostic value of run chart analysis: Using likelihood ratios to
+  compare run chart rules on simulated data series.
+\newblock \emph{Acta Univ. Sapientiae, Mathematica}, 2\penalty0 (2):\penalty0
+  215 -- 228, 2010.
+
+\bibitem[Fousse et~al.(2007)Fousse, Hanrot, Lef\`{e}vre, P\'{e}lissier, and
+  Zimmermann]{FouLHLPZ-2007}
+L.~Fousse, G.~Hanrot, V.~Lef\`{e}vre, P.~P\'{e}lissier, and P.~Zimmermann.
+\newblock Mpfr: A multiple-precision binary floating-point library with correct
+  rounding.
+\newblock \emph{ACM Trans. Math. Softw.}, 33\penalty0 (2):\penalty0 13, 2007.
+\newblock ISSN 0098-3500.
+\newblock \doi{http://doi.acm.org/10.1145/1236463.1236468}.
+
+\bibitem[Maechler(2018)]{Rmpfr}
+M.~Maechler.
+\newblock \emph{Rmpfr: R MPFR - Multiple Precision Floating-Point Reliable},
+  2018.
+\newblock URL \url{https://CRAN.R-project.org/package=Rmpfr}.
+\newblock R package version 0.7-0.
+
+\bibitem[Schilling(2012)]{Schilling:2012}
+M.~F. Schilling.
+\newblock The surprising predictability of long runs.
+\newblock \emph{Mathematics Magazine}, 85\penalty0 (2):\penalty0 141 -- 149,
+  2012.
+\newblock URL \url{https://www.jstor.org/stable/10.4169/math.mag.85.2.141}.
+
+\end{thebibliography}
