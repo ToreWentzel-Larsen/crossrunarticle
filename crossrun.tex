@@ -10,9 +10,11 @@ An abstract of less than 150 words.
 
 \section{Introduction}
 
-The setting is defined by a number of independent observations from a Bernoulli distribution with the same success probability. In statistical process control, our main intended application, this may be the useful observations in a runs plot, recording values above and below the median, disregarding any observations equal to the median \citep{Anhoej:2015}. While the number of crossings follows a binomial distribution in the symmetric case (success probability 1/2), no closed form distribution is known for the longest run. The distribution of the longest run has been investigated in a number of articles, including \citet{Schilling:2012}, and \citet{Fazekas:2010} that in fact gives recursion formulas, and approximations have been given. However, what is needed in applications is the joint distribution of these two variables, for which the authors are not aware of exact results. Our primary aim is to present an iterative procedure for computing this distribution, in principle for an arbitrary number of observations.
+The setting is defined by a number of independent observations from a Bernoulli distribution with the same success probability. In statistical process control, our main intended application, this may be the useful observations in a runs plot, recording values above and below the median in previous data, disregarding any observations equal to the median \citep{Anhoej:2015}. While the number of crossings follows a binomial distribution in the symmetric case (success probability 1/2), no closed form distribution is known for the longest run. The distribution of the longest run has been investigated in a number of articles, including \citet{Schilling:2012}, and \citet{Fazekas:2010} that in fact gives recursion formulas, and approximations have been given. However, what is needed in applications is the joint distribution of these two variables, for which the authors are not aware of exact results. Our primary aim is to present an iterative procedure for computing this distribution, in principle for an arbitrary number of observations.
 
-\section{The iterative procedure}
+This article first describing the setting for the iterative computation procedure and its initial stage, next introduces conditioning on the starting position and partitioning on the position of the first crossing and the joint distribution of the number of crossings and the longst run conditional on these variables. The computation procedure is different in two cases taht are subsequently described. After the exposition of the iterative procedure follows a brief comment on the simpler symmetric case, and the precision of the procedure is discussed. The resulting joint distribution is described in a simle case also included in the package vignette and procedures for checking are briefly commented. Finally, the case where the median is determined from the data itself is considered and a similar procedure in that case is outlined. This case is not yet included in the package.
+
+\section{The iterative procedure, setting}
 
 In n independent Bernoulli observations with success probability p and failure probability q=1-p, values are denoted by 1 (success, with probability p) or 0. A crossing consists of two consecutive different values, and a run of length $l$ consists of $l$ successive observations, delimited by a crossing or the first or last observation. The possible values of the number C of crossings are $c=0, \ldots ,n-1$ and the possible values for the length L of the longest run are $l=1, \ldots ,n$. The joint probabilities of L and C for given n are denoted by $P_n (L=l,C=c)$.
 
@@ -39,10 +41,10 @@ where, as shown in the previous section,  $P_n (F=f \mid S=1) =p^{f-2}q$ if $f \
 
 \section{Joint distribution conditional on both S and F}
 
-First, if there is no crossing ($F=1$) the entire series constitutes one single run, therefore $$P_n (C=0,L=1 \mid S=1,F=1)=P_n (C=0,L=1 \mid S=0,F=1)=1$$
+First, if there is no crossing ($F=1$) the entire sequence constitutes one single run, therefore $$P_n (C=0,L=1 \mid S=1,F=1)=P_n (C=0,L=1 \mid S=0,F=1)=1$$
 and all other conditional probabilities are 0. Thus, the matrices of joint probabilities of C and L conditional on $F=1$ together with each value of S, are matrices with all components equal to 0, except for a 1 in the upper right corner.
 
-If crossings do occur ($f=2, \ldots ,n$), the conditional probabilities $$P_n (C=c,L=l \mid S=1,F=f), P_n (C=c,L=l \mid S=0,F=f)$$ are more complicated. The key to computing these probabilities is to recognize that, except for the initial run of $f-1$ observations, the remaining observations constitute $n-(f-1)=n+1-f$ identical and independent Bernoulli observations with success probability p, they represent the same setting as for all n observations, just a shorter sequence. Further, these $n+1-f$ observations are also conditional on a fixed value of their first observation, only that this fixed value is the opposite as in the entire series. This is because the last $n+1-f$ observations start with the  observation after the first crossing. 
+If crossings do occur ($f=2, \ldots ,n$), the conditional probabilities $$P_n (C=c,L=l \mid S=1,F=f), P_n (C=c,L=l \mid S=0,F=f)$$ are more complicated. The key to computing these probabilities is to recognize that, except for the initial run of $f-1$ observations, the remaining observations constitute $n-(f-1)=n+1-f$ identical and independent Bernoulli observations with success probability p, they represent the same setting as for all n observations, just a shorter sequence. Further, these $n+1-f$ observations are also conditional on a fixed value of their first observation, only that this fixed value is the opposite as in the entire sequence. This is because the last $n+1-f$ observations start with the  observation after the first crossing. 
 
 We now have to distinguish between two cases. In case 1, the initial run of $f-1$ observations before the first crossing are at least as many as the last $n+1-f$ ones. In case 2, the initial run is shorter:
 
@@ -57,7 +59,7 @@ This is the simplest case. Here, the first $f-1$ observations constitute a run o
 \begin{figure}[htbp]
   \centering
   \caption{A runs chart with n=24 time points, starting above the 
-  midline (S=1), and with the first crossing ending at time 16 (F=16). The last 9 observations, from time 16 on, start below the midline (S=0). The figure also shows (upper right) the joint distribution of crossings and runs for the whole time series conditional on (S=1, F=16), and (upper left) the joint distribution among the last 9 observations conditional on (S=0).}
+  midline (S=1), and with the first crossing ending at time 16 (F=16). The last 9 observations, from time 16 on, start below the midline (S=0). The figure also shows (upper right) the joint distribution of crossings and runs for the entire sequence conditional on (S=1, F=16), and (upper left) the joint distribution among the last 9 observations conditional on (S=0).}
   \label{figure:rch}
   \includegraphics{run24}
 \end{figure}
@@ -68,7 +70,7 @@ Note that the $n+1-f$ observations after the initial run start on opposite side 
 
 \section{Case 2, fewer observations before the first crossing than thereafter}
 
-As in case 1, the total number of crossings is between $1$ and $n-f+1$. As to the longest run L, it cannot be shorter than $f-1$ or longer than $n-f+1$, and it is necessary to distinguish between values $l=f-1$ and $l \geq f$. A longest run $f-1$ in the entire series means that all runs in the last $n-f+1$ observations have length $l \leq f-1$. Therefore $$P_n (C=c,L=f-1 \mid S=1,F=f) = P_{n+1-f} (C=c-1,L \leq f-1 \mid S=0)$$
+As in case 1, the total number of crossings is between $1$ and $n-f+1$. As to the longest run L, it cannot be shorter than $f-1$ or longer than $n-f+1$, and it is necessary to distinguish between values $l=f-1$ and $l \geq f$. A longest run $f-1$ in the entire sequence means that all runs in the last $n-f+1$ observations have length $l \leq f-1$. Therefore $$P_n (C=c,L=f-1 \mid S=1,F=f) = P_{n+1-f} (C=c-1,L \leq f-1 \mid S=0)$$
 (and similarly conditional on S=0). For longer runs, $f \leq l \leq n+1-f$ the longest run has to be within the last n+1-f observations and we have $$P_n (C=c,L=l \mid S=1,F=f) = P_{n+1-f} (C=c-1,L=l \mid S=0)$$
 (and similarly conditional on S=0). All these conditional probabilies, based on a shorter sequence, have already been computed in an iterative computation procedure. This procedure is illustrated in Figure~\ref{figure:rch2}:
 
@@ -86,7 +88,7 @@ For $p=\frac{1}{2}$ there is a symmetry between crossings up or down, and betwee
 
 \section{Precision considerations}
 
-To enhance precision, computations have been performed in the R package Rmpfr \citep{Rmpfr}, an R interface to the GNU MPFR library \citep{FouLHLPZ-2007}. Preliminary investigations pointed to precision problems above values about 50 for series length $n$ without this increased precision, but no such problems up to $n=100$ when using Rmpfr. To further enhance precision, probabilities have been multiplied by $m^{n-1}$ where m is a multiplier with default value 2. Thereby very small numbers are avoided, at least to some extent, and the numbers computed are integers in the symmetric case. The joint probabilities for a low $n=15$ are shown below in this representation:
+To enhance precision, computations have been performed in the R package Rmpfr \citep{Rmpfr}, an R interface to the GNU MPFR library \citep{FouLHLPZ-2007}. Preliminary investigations pointed to precision problems above values about 50 for sequence length $n$ without this increased precision, but no such problems up to $n=100$ when using Rmpfr. To further enhance precision, probabilities have been multiplied by $m^{n-1}$ where m is a multiplier with default value 2. Thereby very small numbers are avoided, at least to some extent, and the numbers computed are integers in the symmetric case. The joint probabilities for a low $n=15$ are shown below in this representation:
 
 \tiny{
 \begin{tabular}{l | l l l l l l l l l l l l l l l}
@@ -228,7 +230,44 @@ crossrunbin <- function(nmax=100, prob=.5, mult=2, prec=120, printn=FALSE) {
 
 \section{Limitations}
 
-One main limitation is that the iterative procedure cannot in any obvious way be generalized to autocorrelated time series. It may, however be generalized to time series with independent, but not necessarily identical, observations, this is implemented in a function crossrunchange. Another limitation is that the code has so far only been checked for $n \leq 100$. In that range it seems to work well. It has been checked with manual computations for $n \leq 6$, and with 100,000 simulations for $n=100$. Specifically, the mean and standard deviations for both C and L have been computed, as well as the mean of $C \cdot L$ and also the cumulative distribution functions of C and L separately, with no substantial deviations. It has also been checked for $n \leq 100$ that the marginal distribution of C computed from the joint distribion agrees with the correct binomial distribution in the symmetric case. These last investigations werew, in fact, what pointed to the necessity to base the code on Rmpfr. The performance of the procedure has not, however, so far been checked for n>100. For applications to statistical process control $n \leq 100$ should be sufficient in most cases, but other applications may require higher n.
+One main limitation is that the iterative procedure cannot in any obvious way be generalized to autocorrelated time series. It may, however be generalized to time series with independent, but not necessarily identical, observations, this is implemented in a function crossrunchange. Another limitation is that the code has so far only been checked for $n \leq 100$. In that range it seems to work well. It has been checked with manual computations for $n \leq 6$, and with 100,000 simulations for $n=100$. Specifically, the mean and standard deviations for both C and L have been computed, as well as the mean of $C \cdot L$ and also the cumulative distribution functions of C and L separately, with no substantial deviations. It has also been checked for $n \leq 100$ that the marginal distribution of C computed from the joint distribion agrees with the correct binomial distribution in the symmetric case. These last investigations were, in fact, what pointed to the necessity to base the code on Rmpfr. The performance of the procedure has not, however, so far been checked for n>100. For applications to statistical process control $n \leq 100$ should be sufficient in most cases, but other applications may require higher n.
+
+\section{The case when the median is determined by the data itself}
+
+Another important limitation of the package crossrun is that the case when the median is determined from the data itself in not covered. This is not uncommon in statistical process control. Some progress has been made on this case since the package was submitted to CRAN, and we plan to include a procedure for this case in a subsequent update. This section describes the procedure in general terms. 
+
+The setting is n independent and identically observations of a continuous variable. The empirical median in the sequence is computed, and C and L is the number of crossings of the median line and the longest run above or below the median. Observations at the median neither contribute to the run nor do they break it \citep{Anhoej:2015}. Therefore, limiting to the observations used we may without loss of generality assume that the number n of observations is even, with half the observations above and half the observations below the median. Thus, this case is by definition symmetric.
+
+First, we note that by symmetry, all placements of the m=n/2 observations above the median are equally probable. Therefore, if all sequences of n Bernoulli observations are enumerated, we may simply count the sequences with each combinations of C and L and divide by the total number of sequences, this will give the joint probability. This procedure has been implemented and it is checked that the resulting joint distribution is in close agreement with simulations. The main drawback with this procedure is that that the algorithmic complexity in terms of storage requirements and time consumption is prohibitive except for small n. It is prectical only up to about n=28. This procedure is therefore not discussed further.
+
+To sum up, we want to find the number of sequences of m=n/2 zeroes (below the median) and m ones for each combination of C and L. This problem, it turns out, is not in itself tractable. However, if the requirement that exactly half the observations are 1 and the others are 0 is relaxed, the problem is relaxed it turns out that the problem may be solved by an iterative procedure that in fact resembles the procedure used in crossrun. This reflects a general phenomonon, in an iterative procedure "more may be less", because then more information is available from earlier stages. This we set out to compute the number of sequences of m ones and n-m zeroes for each value c of C and l of L, $1 \leq c \leq n-1, 1 \leq l \leq n$. 
+
+This problem has higher algorithmic complexity than the corresponding problem already teeated in crossrunbin since the numer for sequences has to be computed for all m, $0 \leq m \leq n$. And also for al n, not only for even numbers. This increases complexity by a factor roughly equal to 2n, and only a tiny fraction of the information produced is actually used, for even n and m=n/2. Still the algorithmic complexity is appreciably lower than the procedure using full enumaration of all sequences, and we have been able to reach n=64 within resonable time. In the following we introduce some notation before describing the iterative procedure in more detail.
+
+We set $\text{NFI}_{n,m} (C=c, L=l)$ equal to the number of sequences of m ones and n-m zeroes with c crossings and longest run l, starting with a 1. Similarly $\text{NFN}_{n,m} (C=c, L=l)$ is the number of sequences of m ones and n-m zeroes with c crossings and longest run l, starting with a 0 (number of subsets, first element included and not included, respectively). We want to compute these two numbers for all m, $0 \leq m \leq n$ and all c and l, $0 \leq c \leq n-1, 1 \leq l \leq n$. The cases m=0, n are simple. If $m=0$, NFI is all zeroes and in $\text{NFN}_{n,0} (C=0, L=n)=1$ and the rest of the NFN matrix is 0. Similarly, for m=n, NFN is all zeroes and $\text{NFI}_{n,n} (C=0, L=n)=1$ and the rest of the NFI matrix is 0. In the following we assume that $1 \leq m \leq n-1$. We partition on the length G of the initial run, with values $1 \leq g \leq m$ in computation
+of NFI and $1 \leq g \leq n-m$ in computation of NFN. Then $$\text{NFI}_{n,m} (C=c, L=l) = \sum_{g=1}^m \text{NFI}_{n,m} (C=c, L=l, G=g)$$
+$$\text{NFN}_{n,m} (C=c, L=l) = \sum_{g=1}^{n-m} \text{NFN}_{n,m} (C=c, L=l, G=g)$$
+Much as in crossrunbin there are two cases, 
+
+Case 1: $g \geq n-g$
+
+Case 2: $g < n-g$
+
+Case 1 is the simplest one. Then no runs within the last n-g is longerhgtan the initial run and the total number of crossings is one more than the number of crossings within these last part of the sequence. Therefore non-zero numbers are confined to $1 \leq c \leq n-g, l=g$ and $$\text{NFI}_{n,m} (C=c, L=l, G=g) = \text{NFN}_{n-g,m-g} (C=c-1)$$
+$$\text{NFN}_{n,m} (C=c, L=l, G=g) = \text{NFi}_{n-g,m} (C=c-1)$$
+
+Note that the G=g contribution to NFI, resp. NFN, is computed from NFN, resp. NFI within the last n-g observations, it is not possible to compute NFI or NFN without the other. This is because the first observation after the initial run is opposite to the first observation in the entire sequence. This also applies in case 2.
+
+In case 2 the longest run in the last n-g observations may be longer than the initial run. For the entire sequence, l=g may occur, this is when the longest run in the last n-q observations is $\leq g$,
+$$\text{NFI}_{n,m} (C=c, L=g, G=g) = \text{NFN}_{n-g,m-g} (C=c-1, L \leq g)$$
+$$\text{NFN}_{n,m} (C=c, L=g, G=g) = \text{NFI}_{n-g,m} (C=c-1, L \leq g)$$
+
+L>g may also occur if the longest run is within the last n-g observations. Then
+$$\text{NFI}_{n,m} (C=c, L=l, G=g) = \text{NFN}_{n-g,m-g} (C=c-1, L=l)$$
+$$\text{NFN}_{n,m} (C=c, L=l, G=g) = \text{NFN}_{n-g,m} (C=c-1, L=l)$$
+
+Now all cases are covered, and together these formulas make it possible to compute all $\text{NFI}_{n,m} (C=c, L=l)$ and $\text{NFN}_{n,m} (C=c, L=l)$ based on the smaller sequence after the initial run.
+
 
 \bibliography{crossrun}
 
