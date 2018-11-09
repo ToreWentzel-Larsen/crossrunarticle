@@ -268,10 +268,20 @@ $$\text{NFN}_{n,m} (C=c, L=l, G=g) = \text{NFN}_{n-g,m} (C=c-1, L=l)$$
 
 Now all cases are covered, and together these formulas make it possible to compute all $\text{NFI}_{n,m} (C=c, L=l)$ and $\text{NFN}_{n,m} (C=c, L=l)$ based on the smaller sequence after the initial run.
 
-\section{Temporary section: Detailed computation for n=7}
+\section{Temporary section: Detailed computation, illustrated for n=7}
 
-This section should be removed before publication, but is included to aid our own comprehension of the procedure. We take as an example n=7 in the symmetric case. The joint distributions for $n=1, \ldots, 6$ are taken for granted throughout, this is an illustration of step 7 in the sequential computation procedure. S denotes the first observation, 1 if starting above the midline (success) and 0 elsewhere (failure). F is the ending position of the first crossing with values $2, \ldots, 7$, or by convention 1 if there is no crossing. Then $$P_7 (C=c, L=l \mid S=1) = (1/2)^6 \cdot   P_7 (C=c, L=l \mid S=1,F=1) +    $$  $$(1/2) \cdot P_7 (C=c, L=l \mid S=1,F=2) + (1/2)^2 \cdot P_7 (C=c, L=l \mid S=1,F=3) + \ldots  +$$ $$(1/2)^6 \cdot P_7 (C=c, L=l \mid S=1,F=7) $$
-In the times representation these probabilities are multiplied by $2^6$, we will need both the original scales and the times representation in the following. 
+This section should be removed before publication, but is included to aid our own comprehension of the procedure. First some generalities on the times representation $$\text{Pt}_n ( C=c, L=l \mid S=1 ) = m^{n-1} P_n ( C=c, L=l \mid S=1 )$$ where m is a multiplier normally set as m=2 (the case of conditioning on S=0, starting below the midline, is similar). Denoting the success probability as p and the failure probability as q=1-p the main decomposition for probabilities is $$P_n ( C=c, L=l \mid S=1) = p^{n-1} \cdot P_n ( C=c, L=l \mid S=1, F=1) +$$
+
+$$ \sum_{f=2}^n p^{f-2} \cdot  q \cdot P_n ( C=c, L=l \mid S=1, F=f)$$
+where the first term conditions on F=1, by convention corresponding to no crossing, and each of the remaining terms condition on $F=f, f =2, \ldots , n$ corresponds to the first crossing from f-1 to f. The corresponding decomposition in the times representation is $$\text{Pt}_n ( C=c, L=l \mid S=1) = (pm)^{n-1} \cdot P_n ( C=c, L=l \mid S=1, F=1) +$$
+$$ \sum_{f=2}^n (pm)^{f-2} \cdot  qm \cdot m^{n-f} P_n ( C=c, L=l \mid S=1, F=f)$$
+
+In the first term for no crossing the probability is simply 1 if $C=0, L=n$ and 0 otherwise. This term is the same in the times representation except for the initial factor in which $p^{n-1}$ is replaced by $(pm)^{n-1}$. In the symmetric case both pm and qm are equal to 1, thus the initial factor is 1 and the term as a whole is actually simpler in the times representation in the symmetric case.
+
+In the remaining terms, for the first crossing from f-1 to f, there there is first a factor $(pm)^{f-2} \cdot  qm$ that is similar to the corresponding factor in the original representation, except that p is replaced by pm and q by qm. Again this first factor is actually 1 in the symmetric case. The rest of the term is $m^{n-f} P_n ( C=c, L=l \mid S=1, F=f)$. In the following we will show that the probabilities $P_n ( C=c, L=l \mid S=1, F=f)$ are determined by the joint distribution $P_{n+1-f} ( C=c', L=l' \mid S=0)$ for the observations starting at the end of the first crossing. Here we condition on the opposite starting value S=0 since this last part of the sequence starts just where the first crossing has occurred. As to the main part of the term $P_n ( C=c, L=l \mid S=1, F=f)$ we more specifically have seen, ands will illustrate in an example, that it is determinded by the joint distribution $P_{n+1-f} ( C=c', L=l' \mid S=0)$ by simple operations in terms of additions and reshuffling only. The corresponding joint distribution on the times representation is $$\text{Pt}_{n+1-f} ( C=c', L=l' \mid S=0)=m^{(n+1-f)-1} \cdot P_{n+1-f} ( C=c', L=l' \mid S=0)$$ where the leading factor $m^{(n+1-f)-1}=m^{n-f}$ is exactly the same as the leadning factor in $m^{n-f} P_n ( C=c, L=l \mid S=1, F=f)$. Therefore the term $$m^{n-f} P_n ( C=c, L=l \mid S=1, F=f)$$ is determined by the joint distribution $$\text{Pt}_{n+1-f} ( C=c', L=l' \mid S=0)$$ on the times scale by exactly the same additions and reshufflings as apply on the original probability scale.
+
+We take as an example n=7 in the symmetric case. The joint distributions for $n=1, \ldots, 6$ are taken for granted throughout, this is an illustration of step 7 in the sequential computation procedure. Then $$P_7 (C=c, L=l \mid S=1) = (1/2)^6 \cdot   P_7 (C=c, L=l \mid S=1,F=1) +    $$  $$(1/2) \cdot P_7 (C=c, L=l \mid S=1,F=2) + (1/2)^2 \cdot P_7 (C=c, L=l \mid S=1,F=3) + \ldots  +$$ $$(1/2)^6 \cdot P_7 (C=c, L=l \mid S=1,F=7) $$
+In the times representation these probabilities are multiplied by $2^6$. 
 
 In the contribution from F=1, $P_7 (C=c, L=l \mid S=1,F=1)$ is 1 if C=0 and L=7 and 0 elsewhere, since F=1 is defined as no crossing. This, the contribution from this first term, in the times representation, is a 7x7 matrix with a 1 in the upper right corner and zeroes elsewhere. 
 
@@ -282,7 +292,7 @@ In case 1 we start with f=7. Then the first 6 observations are above the midline
 The term for f=6 is $$(1/2)^5 \cdot   P_7 (C=c, L=l \mid S=1,F=6)$$
 
 The longest run is the initial one, with l=5. There is one crossing from observation 5 to 6. In addition, the last two observations start below the midline and constitute a sequence on its own, with equal probabilities 1/2 for zero and for one crossing. Thus $$P_7 (C=1, L=5 \mid S=1,F=6)=P_7 (C=2, L=5 \mid S=1,F=6)=1/2$$
-The 1/2 here gives $(1/2)^6$ when multiplied by the initial factor $(1/2)^5$ in the term. Thus in the times repreentation this contribution is represented by a matrix with ones at positions (c=1,l=5) and (c=2,l=5) and zeroes elsewhere. 
+The 1/2 here gives $(1/2)^6$ when multiplied by the initial factor $(1/2)^5$ in the term. Thus in the times representation this contribution is a matrix with ones at positions (c=1,l=5) and (c=2,l=5) and zeroes elsewhere. 
 
 The term for f=5 is $$(1/2)^4 \cdot   P_7 (C=c, L=l \mid S=1,F=5)$$
 
@@ -341,7 +351,7 @@ c= 3& 1& 0\\
 \hline
 \end{tabular}
 
-In the joint distribution for the entire sequence, $l$ is therefore 3 or 4, and the contribution to joint distribution of C and L for the entire sequence is given by the table above, only with one more crossing:
+In the joint distribution for the entire sequence, $l$ is therefore 3 or 4, and the contribution to the joint distribution of C and L for the entire sequence is given by the table above, only with one more crossing:
 
 \begin{tabular}{l | l l l l l l l}
 \hline
@@ -358,7 +368,8 @@ c= 7& 0& 0& 0& 0& 0& 0& 0\\
 \hline
 \end{tabular}
 
-Continuing with f=3, the term is $$(1/2)^3 \cdot   P_7 (C=c, L=l \mid S=1,F=4)$$
+
+Continuing with f=3, the term is $$(1/2)^2 \cdot   P_7 (C=c, L=l \mid S=1,F=4)$$
 The initial run of f-1=2 observations may or may not be a longest run. The joint distribution for the last 5 observations in the times representation is 
 
 \begin{tabular}{l | l l l l l}
