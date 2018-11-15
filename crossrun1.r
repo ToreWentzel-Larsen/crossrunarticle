@@ -807,3 +807,65 @@ colnames(bin15.7) <- paste0("l=",1:15)
 round(bin15.7,1)
 sum(bin15.7) - 2^14
 
+# commands for saving some important objects:
+saveRDS(object=cr100$pt, file="crsymm.Rdata")
+saveRDS(object=crb100..6, file="cr.6.Rdata")
+saveRDS(object=crb100..7, file="cr.7.Rdata")
+saveRDS(object=crb100..8, file="cr.8.Rdata")
+saveRDS(object=crb100..9, file="cr.9.Rdata")
+
+# tries getting the data from GitHub:
+crsymm <- repmis::source_data(rdata=TRUE,
+                              url="https://github.com/ToreWentzel-Larsen/crossrun/blob/master/crsymm.Rdata")
+crsymm <- readr::read_rds(path="https://github.com/ToreWentzel-Larsen/crossrun/blob/master/crsymm.Rdata")
+
+# vise matrisene for gitt n:
+# det symmetriske tilfellet:
+asNumeric(cr100$pt[[20]])
+# har det også for p=0,6, 0,7, 0,8, 0,9
+round(asNumeric(crb100..6$pt20),1) # p=0,6, vises med en desimal
+
+# objekt for 2 sd:
+crb100.2sd <- crossrunbin(prob=pnorm(2), printn=TRUE)$pt
+# check by simulations:
+set.seed(83938487)
+Sys.time() # less than 1 minute
+cl100.2sdsimbin <- simclbin(probs=pnorm(2)) 
+Sys.time()
+# about 3 minutes
+# expectation of C for n=100:
+sum(cumsumm(crb100.2sd$pt100)[,100]*(0:99))/(2^99)
+mean(cl100.2sdsimbin$nc2) # 4.40 vs 4.41, ok
+# expectation of L for n=100:
+sum(cumsummcol(crb100.2sd$pt100)[100,]*(1:100))/(2^99)
+mean(cl100.2sdsimbin$lr2) # 62.10 vs 62.0, ok
+# standard deviation of C for n=100:
+sqrt(sum(cumsumm(crb100.2sd$pt100)[,100]*((0:99)^2))/(2^99) - 
+       (sum(cumsumm(crb100.2sd$pt100)[,100]*(0:99))/(2^99))^2)
+sd(cl100.2sdsimbin$nc2) # 2.859 vs 2.865, ok
+# standard deviation of L for n=100:
+sqrt(sum(cumsummcol(crb100.2sd$pt100)[100,]*((1:100)^2))/(2^99) - 
+       (sum(cumsummcol(crb100.2sd$pt100)[100,]*(1:100))/(2^99))^2)
+sd(cl100.2sdsimbin$lr2) # 21.17 vs 21.20, ok
+# expectation of C*L for n=100:
+(matrix(0:99,nrow=1) %*% crb100.2sd$pt100 %*% matrix(1:100,ncol=1))/(sum(crb100.2sd$pt100))
+mean(cl100.2sdsimbin$nc2*cl100.2sdsimbin$lr2) # 227.2 vs 227.0, ok
+(matrix(0:99,nrow=1) %*% crb100.2sd$pt100 %*% matrix(1:100,ncol=1))/(sum(crb100.2sd$pt100))
+# compare cdf of C with simulations, all plots indistinguishible:
+plot(x=as.numeric(names(table(cl100.2sdsimbin$nc2))), y=(cumsum(cumsumm(crb100.2sd$pt100)[,100])/(2^99))[
+  as.numeric(names(table(cl100.2sdsimbin$nc2)))+1], type="l")
+points(x=as.numeric(names(table(cl100.2sdsimbin$nc2))), type="l", col="red", lty="dotted",
+       y=cumsum(table(cl100.2sdsimbin$nc2))/sum(table(cl100.2sdsimbin$nc2)))
+# compare cdf of L with simulations, all plots indistinguishible:
+plot(x=as.numeric(names(table(cl100.2sdsimbin$lr2))), type="l",
+     y=as.numeric(cumsum(cumsummcol(crb100.2sd$pt100)[100,])/
+                    sum(cumsummcol(crb100.2sd$pt100)[100,]))[as.numeric(names(table(cl100.2sdsimbin$lr2)))])
+points(x=as.numeric(names(table(cl100.2sdsimbin$lr2))), type="l", col="red", lty="dotted",
+       y=cumsum(table(cl100.2sdsimbin$lr2))/sum(table(cl100.2sdsimbin$lr2)))
+
+
+
+
+
+
+
