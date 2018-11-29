@@ -1,0 +1,122 @@
+---
+title: "crossrunauto: A function for the Joint Distribution of Number of Crossings and  
+  Longest Run in Autocorrelated Bernoulli Observations"
+shorttitle: "crossrunauto"
+author: 
+- name: Tore Wentzel-Larsen  
+  affiliation: 
+    - Centre for Child and Adolescent Mental Health, Eastern and Southern Norway;
+     Norwegian Centre of Violence and Traumatic Stress Studies 
+  email: tore.wentzellarsen@gmail.com
+- name: Jacob Anhøj
+  affiliation: 
+  - Rigshospitalet, University of Copenhagen, Denmark
+  email: jacob@anhoej.net
+package name: crossrun
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse  = TRUE, 
+  comment   = "#>",
+  fig.width = 7.15,
+  fig.height = 3.5,
+  echo = FALSE,
+  message = FALSE)
+
+library(crossrun)
+```
+
+## Introduction
+
+For notation and setting here, see the vignette and defining articles for the package crossrun (references will be inserted, for the moment the references are kept as in the crossrun vignette). The functions in the package crossrun assume independent observations. Autocorrelation may lead to false alarms when using the Anhøj rules or variants of them, and it may be of some importance to investigate the extent of this problem. For that purpose we have developed a function crossrunauto that finds the joint distribution of C and L in a simple model for an autocorrelated sequence of Bernoulli observations. We first present the model, next we give formulas for the joint distribution in the model, present the function crossrunauto and finally show how the function may be checked by comparison with simulations.
+
+## The model
+
+The first observation has a simple Bernoulli distribution, $P (X_1=1)=p, P(X_1=0)=1-p$. We assume that the distribution of each subsequent observation is fully determined by the previous observation. Specifically, stated only for the first two observations we denote $d=P(X_2=0 \mid X_1=1)$, the "down" probability and $u=P(X_2=1 \mid X_1=0)$, the "up" probability. We first find the condition for the same distribution for all subsequent observations, this will hereafter be assumed. The condition is $P(X_2=1)=p$ which gives $$P(X_2=1 \mid X_1=1) \cdot P(X_1=1) + P(X_2=1 \mid X_1=0) \cdot P(X_1=0)=p$$
+that gives $(1-d)p+u(1-p)=p$ or simplified $pd=(1-p)u$. It is easy to check that the same condition is obtained starting with the equivalent condition $P(X_2=0)=1-p$. This condition represents a line through the origin in the (d,u) plane, with slope $\frac{p}{1-p}$ that is >1 if p>1/2 and <1 if p>1/2. The slope is 1 in the symmetric case p=1/2, in that case the down and up probabilities are equal.
+
+The condition for independent observations is that $$P(X_2=1 \mid X_1=1)=P(X_2=1 \mid X_1=0), 1-d=u$$
+Together with the constancy condition $pd=(1-p)u$ this gives $d=1-p, u=p$. The autocorrelation k between two subsequent observations may be computed as $k=1-\frac{d}{1-p}=1-\frac{u}{p}$. Thus this is a case in which independence is equivalent with $k=0$.
+
+The main interest in the joint distribution of C and L may be in the symmetric case, but the procedure outlined here is quite general, only assuming the constancy condition. We therefore investigate the 
+
+The function `crossrunbin` has two main arguments, `nmax` that is the maximum sequence length and `prob` that is the success probability. Other arguments include a multiplier described later and a precision parameter, these should normally be left at their default values. See `?crossrunbin` for details.
+
+The joint probabilities are stored in a list of 6 lists of which `pt` is sufficient for normal use. The others are mainly included for code checking. `pt` gives an n by n matrix for each sequence length n. For instance
+
+`crb40.6 <- crossrunbin(nmax = 40, prob = 0.6)$pt`
+
+computes the joint probabilities for all sequence lengths $n \leq 40$ when the success probability is 0.6. For simplicity, the command above only returns the joint probabilities `pt`. When the computation is finished, the joint distribution for say n = 14 is 
+
+`crb40.6[[14]]`
+
+Actually the resulting joint distribution is not quite a matrix, it is a two-dimensional mpfr array ([Fousse et, al, 2007](http://doi.acm.org/10.1145/1236463.1236468), [Mächler 2018](https://CRAN.R-project.org/package=Rmpfr)). Two-dimensional mpfr arrays are almost the same as matrices, but with appreciably higher precision. Since the computation procedure is iterative, high precision during calculation is vital, but the resulting joint distributions may subsequently be transformed into ordinary matrices by the [Rmpfr](https://CRAN.R-project.org/package=Rmpfr) function `asNumeric` for easier presentation. To limit the package size, only the joint distributions for n = 14, 60, 100 and success probabilities 0.5 (the symmetric case) and 0.6 have been included in this package, as ordinary matrices.
+
+## The "times" representation of the joint distributions
+
+As mentioned, the joint distributions are actually not computed as probabilities, but as probabilities times a multiplier whose default value is $2^{n-1}$. Optionally another multiplier $m^{n-1}$ could be used where $m$ is an argument (`mult`) to the function `crossrunbin`, but the default value should normally be used. This representation is shown in Table 1 for n = 14 and p = 0.5.
+
+One may note that in Table 1 all probabilities are represented by integers in the "times" representation. This is a general phenomenon in the symmetric case, but not for success probabilities different from 0.5. In the symmetric case ([Anhøj and Vingaard Olesen (2014)](http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0113825)) the number, C, of crossings has a binomial distribution with number of observations n - 1 and probability 0.5, and their marginal probabilities are just the binomial coefficients divided by $2^{n-1}$. Indeed, the row sums in the times representation are the binomial coefficients in the symmetric case. This will be explicated later in the case of n = 14.
+
+When the success probability is not 0.5, the joint distribution is no longer represented by integers even in the times representation. This is illustrated below for n = 14 and success probability 0.6. 
+
+```{r p14.6, echo=FALSE, message=FALSE, fig.width=15}
+p14.6 <- joint14.6
+rownames(p14.6)[1] <- "C = 0"
+colnames(p14.6)[1] <- "L = 1"
+
+knitr::kable(round(p14.6,1), caption = 'Table 2')
+```
+
+In Table 2 the results are shown with one decimal. The cells different from 0 are the same as in the symmetric case, but the distribution centre has been shifted in the direction of longer runs and fewer crossings. 
+
+The times representation may be advantageous for presentation because very small numbers are avoided. However, the main reason for using this representation is to enhance precision in the iterative computation procedure.
+
+## The symmetric case: `crossrunsymm`
+
+In the symmetric case the joint probabilities are, as illustrated in Table 1, stored as integers in the times representation. A separate function `crossrunsymm` is available in this case. The arguments, except the success probability, are the same as in the more general function `crossrunbin`, but the inner workings are somewhat simpler.
+
+## Generalisation
+
+In the case of variable success probability, a similar procedure is available and implemented in the function `crossrunchange`. In this procedure all arguments are as in `crossrunbin`, except that the success probability is replaced by a vector of length n with success probabilities for each of the n time points.
+
+## Limitations
+
+The main limitation of this method is that the procedure does only apply when the median is pre-specified, not when it is determined by the time series itself, which, in practice, is often the case when using run charts for real time process monitoring. Also, the procedure cannot be generalized to autocorrelated time sequences.
+
+## Conclusions
+
+The `crossrun` package is, to our knowledge the first software package that allows for the computation of joint probabilities of longest run and number of crossings in time series data. This is an important step forward, as previous work on the subject have only dealt with these parameters as independent entities. This work may form the basis of better tests for non-random variation in time series data than are currently available.
+
+## References
+
+1. Jacob Anhøj (2015). [Diagnostic value of run chart analysis: 
+ Using likelihood ratios to compare run chart rules on simulated 
+ data series](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0121349)
+PLOS ONE 10 (3): e0121349.
+
+1. Jacob Anhøj, Anne Vingaard Olesen (2014). [Run Charts Revisited: A Simulation Study of Run Chart Rules for Detection of Non-Random Variation in Health Care Processes](http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0113825). PLoS ONE 9(11): e113825.
+ 
+1. Laurent Fousse, Guillaume Hanrot, Vincent Lefèvre, 
+ Patrick Pélissier, Paul Zimmermann. (2007). [Mpfr: A multiple-precision 
+ binary floating-point library with correct 
+ rounding](http://doi.acm.org/10.1145/1236463.1236468)
+ACM Trans. Math. Softw. 33 (2): 13. ISSN 0098-3500.
+
+1. Martin Mächler (2018). [Rmpfr: R MPFR - Multiple Precision 
+  Floating-Point Reliable](https://CRAN.R-project.org/package=Rmpfr)
+R package version 0.7-0.
+
