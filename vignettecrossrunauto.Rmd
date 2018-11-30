@@ -51,19 +51,26 @@ that gives $(1-d)p+u(1-p)=p$ or simplified $pd=(1-p)u$. It is easy to check that
 The condition for independent observations is that $$P(X_2=1 \mid X_1=1)=P(X_2=1 \mid X_1=0), 1-d=u$$
 Together with the constancy condition $pd=(1-p)u$ this gives $d=1-p, u=p$. The autocorrelation k between two subsequent observations may be computed as $k=1-\frac{d}{1-p}=1-\frac{u}{p}$. Thus this is a model in which independence is equivalent to uncorrelated subsequent observations.
 
-The main interest in the joint distribution of C and L may be in the symmetric case, but the procedure outlined here is quite general, only assuming the constancy condition. We first investigate the possible values of the down and up probabilities. If p>0.5, the constancy condition $pd=(1-p)u$ means that $d=\frac{1-p}{p}u$. This implies that all values $0 \leq u \leq 1$ of the up probability u are possible, but if u=1 the down probability is $d=\frac{1-p}{p}$ which is the maximum possible value of the down probability if p>1/2. Similarly
+The main interest in the joint distribution of C and L may be in the symmetric case, but the procedure outlined here is quite general, only assuming the constancy condition. We first investigate the possible values of the down and up probabilities. If p>0.5, the constancy condition $pd=(1-p)u$ means that $d=\frac{1-p}{p}u$. This implies that all values $0 \leq u \leq 1$ of the up probability u are possible, but if u=1 the down probability is $d=\frac{1-p}{p}$ which is the maximum possible value of the down probability if p>1/2. Similarly, if p<0.5 all values $0 \leq u \leq 1$ of the down probability d are possible, but if d=1 the up probability is $u=\frac{p}{1-p}$ which is the maximum possible value of the up probability if p>1/2. In the function crossrunauto only the unconstrained change probability is included as an argument changeprob, this is u if $p \geq 0.5$ and d if p<0.5. The other change probability is then computed from the constancy condition $pd=(1-p)u$.
 
-The function `crossrunbin` has two main arguments, `nmax` that is the maximum sequence length and `prob` that is the success probability. Other arguments include a multiplier described later and a precision parameter, these should normally be left at their default values. See `?crossrunbin` for details.
+## The iterative procedure
 
-The joint probabilities are stored in a list of 6 lists of which `pt` is sufficient for normal use. The others are mainly included for code checking. `pt` gives an n by n matrix for each sequence length n. For instance
+The iterative procedure for computing the joint probabilities for C and L in the model defined above is now nearly the same as for independent observations. We still condition on S and F, where S is the first observation. $P_n(S=1)=p, P_N)S=0)=1-p$. And we still partion by the end F of the first crossing, with values $f=2, \ldots , n$ and an additional value 1 conventially definned as no crossing. Then  $$P_n(F=1 \mid S=1)=(1-d)^{n-1}, P_n(F=1 \mid S=0)=(1-u)^{n-1}$$
+and for $f=2, \ldots , n$, $$P_n(F=f \mid S=1)=(1-d)^{f-2} \cdot d$$ $$P_n(F=f \mid S=0)=(1-u)^{f-2} \cdot u$$
+The joint distribution may now be computed by an iterative procedure closely related to the procedure for independent observations, $$P_n (L=l,C=c \mid S=1) = \sum_{f=1}^n P_n(L=l,C=c \mid S=1,F=f) \cdot P_n (F=f \mid S=1)$$ $$P_n (L=l,C=c \mid S=0) = \sum_{f=1}^n P_n(L=l,C=c \mid S=0,F=f) \cdot P_n (F=f \mid S=0)$$
+Here the last factors $P_n (F=f \mid S=1), P_n (F=f \mid S=0)$ are given above, with formulas only slightly different from the independent case. And the first factors, $P_n(L=l,C=c \mid S=1,F=f), P_n(L=l,C=c \mid S=0,F=f)$ are now, exactly as in the independet case, determined by the last n-f+1 observations, that still constitute a sequence of the same type as the full sequence, only that it is conditioned on the opposite starting position. For this argument the constancy assumption is crucial, each observation has the same success probability p. Just as in the independent case the probabilities may be re
 
-`crb40.6 <- crossrunbin(nmax = 40, prob = 0.6)$pt`
+## Old stuff, to be removed
 
-computes the joint probabilities for all sequence lengths $n \leq 40$ when the success probability is 0.6. For simplicity, the command above only returns the joint probabilities `pt`. When the computation is finished, the joint distribution for say n = 14 is 
+In n independent Bernoulli observations with success probability p and failure probability q=1-p, values are denoted by 1 (success, with probability p) or 0. A crossing consists of two consecutive different values, and a run of length $l$ consists of $l$ successive observations, delimited by a crossing or the first or last observation. The possible values of the number C of crossings are $c=0, \ldots ,n-1$ and the possible values for the length L of the longest run are $l=1, \ldots ,n$. The joint probabilities of L and C for given n are denoted by $P_n (L=l,C=c)$.
 
-`crb40.6[[14]]`
+The iterative procedure involves conditioning on the first observation denoted by S, with values 1 for success (probability p) and 0 for failure (probability q). What are computed in the iterative procedure are the conditional probabilities $$P_n (L=l,C=c \mid S=1), P_n (L=l,C=c \mid S=0)$$
 
-Actually the resulting joint distribution is not quite a matrix, it is a two-dimensional mpfr array ([Fousse et, al, 2007](http://doi.acm.org/10.1145/1236463.1236468), [Mächler 2018](https://CRAN.R-project.org/package=Rmpfr)). Two-dimensional mpfr arrays are almost the same as matrices, but with appreciably higher precision. Since the computation procedure is iterative, high precision during calculation is vital, but the resulting joint distributions may subsequently be transformed into ordinary matrices by the [Rmpfr](https://CRAN.R-project.org/package=Rmpfr) function `asNumeric` for easier presentation. To limit the package size, only the joint distributions for n = 14, 60, 100 and success probabilities 0.5 (the symmetric case) and 0.6 have been included in this package, as ordinary matrices.
+This conditioning on the first observation is an essential part of the procedure. One way to see that this is reasonable is to consider the case when p is close to 1. Then most observations are successes, most runs are success runs and the conditional joint distribution of runs and crossings is quite different dependent on the first observation. It is sufficient to be able to compute these conditional distributions, because the unconditional joint distribution is
+$$P_n (L=l,C=c) = P_n (L=l,C=c \mid S=1) \cdot p + P_n (L=l,C=c \mid S=0) \cdot q$$
+
+For the iterative procedure to work it is also necessary to take another variable into account, the first crossing. More precisely, we denote the end position of the first crossing by F, with values $f=2, \ldots ,n$. An additional value $f=1$ denotes, by convention, the case of no crossing. The joint probabilities for C and L conditional on S are partioned by further conditioning on F as detailed below. First we present the starting point of the iterative procedure, the conditional probabilities in  the rather redundant case with only one observation.
+
 
 ## The "times" representation of the joint distributions
 
@@ -73,13 +80,6 @@ One may note that in Table 1 all probabilities are represented by integers in th
 
 When the success probability is not 0.5, the joint distribution is no longer represented by integers even in the times representation. This is illustrated below for n = 14 and success probability 0.6. 
 
-```{r p14.6, echo=FALSE, message=FALSE, fig.width=15}
-p14.6 <- joint14.6
-rownames(p14.6)[1] <- "C = 0"
-colnames(p14.6)[1] <- "L = 1"
-
-knitr::kable(round(p14.6,1), caption = 'Table 2')
-```
 
 In Table 2 the results are shown with one decimal. The cells different from 0 are the same as in the symmetric case, but the distribution centre has been shifted in the direction of longer runs and fewer crossings. 
 
