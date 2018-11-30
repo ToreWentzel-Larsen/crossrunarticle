@@ -49,9 +49,9 @@ The first observation has a simple Bernoulli distribution, $P (X_1=1)=p, P(X_1=0
 that gives $(1-d)p+u(1-p)=p$ or simplified $pd=(1-p)u$. It is easy to check that the same condition is obtained starting with the equivalent condition $P(X_2=0)=1-p$. This condition represents a line through the origin in the (d,u) plane, with slope $\frac{p}{1-p}$ that is >1 if p>1/2 and <1 if p>1/2. The slope is 1 in the symmetric case p=1/2, in that case the down and up probabilities are equal.
 
 The condition for independent observations is that $$P(X_2=1 \mid X_1=1)=P(X_2=1 \mid X_1=0), 1-d=u$$
-Together with the constancy condition $pd=(1-p)u$ this gives $d=1-p, u=p$. The autocorrelation k between two subsequent observations may be computed as $k=1-\frac{d}{1-p}=1-\frac{u}{p}$. Thus this is a case in which independence is equivalent with $k=0$.
+Together with the constancy condition $pd=(1-p)u$ this gives $d=1-p, u=p$. The autocorrelation k between two subsequent observations may be computed as $k=1-\frac{d}{1-p}=1-\frac{u}{p}$. Thus this is a model in which independence is equivalent to uncorrelated subsequent observations.
 
-The main interest in the joint distribution of C and L may be in the symmetric case, but the procedure outlined here is quite general, only assuming the constancy condition. We therefore investigate the 
+The main interest in the joint distribution of C and L may be in the symmetric case, but the procedure outlined here is quite general, only assuming the constancy condition. We first investigate the possible values of the down and up probabilities. If p>0.5, the constancy condition $pd=(1-p)u$ means that $d=\frac{1-p}{p}u$. This implies that all values $0 \leq u \leq 1$ of the up probability u are possible, but if u=1 the down probability is $d=\frac{1-p}{p}$ which is the maximum possible value of the down probability if p>1/2. Similarly
 
 The function `crossrunbin` has two main arguments, `nmax` that is the maximum sequence length and `prob` that is the success probability. Other arguments include a multiplier described later and a precision parameter, these should normally be left at their default values. See `?crossrunbin` for details.
 
