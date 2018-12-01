@@ -1,5 +1,9 @@
+# preparations for figures run24 and run24 case, if cr100 not already in workspace:
+# cr100 <- crossrunsymm(100, printn=TRUE)
+cr100 <- readRDS('cr100.rds')
+
 # Figure 1
-pdf('fig1.pdf', w = 5, h = 2, pointsize = 8)
+# pdf('fig1.pdf', w = 5, h = 2, pointsize = 8)
 set.seed(32)
 n <- 24
 y <- rnorm(n)
@@ -17,16 +21,9 @@ plot(x, y,
 lines(x, rep(median(y), n), col = 'grey40')
 text(x, y)
 par(op)
-dev.off()
+# dev.off()
 
-# Figure 2
-
-# preparations for figures run24 and run24 case, if cr100 not already in workspace:
-
-cr100 <- crossrunsymm(100, printn=TRUE)
-
-# figure run24:
-
+# figure run24 ----
 # plot to include in article for n=24, f=16 (case 1):
 cr24matr <- matrix(as.numeric(cr100$pt[[24]]), ncol=24)
 rownames(cr24matr) <- 0:23
@@ -116,11 +113,8 @@ arrows(x0=x9+9*xincr, x1=x24+15*xincr, col="red",
        y0=y9-4*yincr,y1=y9-4*yincr)
 par(mar=c(bottom=5,left=4,top=4,right=2)+.1)
 
-# figure run24 case:
-
+# figure run24 case ----
 # plot to include in article for n=24, f=9 (case 2):
-cr24matr
-# runs plot for n=24, f=9:
 set.seed(83938487)
 values2 <- c(runif(8,.5,1),runif(1,-1,-.5),2*rbinom(15,1,.5)-1+runif(15,-.3,.3))
 xright <- 70

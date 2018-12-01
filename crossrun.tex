@@ -10,16 +10,16 @@ An abstract of less than 150 words.
 
 \section{Introduction}
 
-The setting is defined by a number of independent observations from a Bernoulli distribution with the same success probability. In statistical process control, our main intended application, this may be the useful observations in a runchart, recording values above and below the median in previous data, disregarding any observations equal to the median \citep{Anhoej:2015}. 
+The setting is defined by a number of independent observations from a Bernoulli distribution with the same success probability. In statistical process control, our main intended application, this may be the useful observations in a runchart, recording values above and below the median from previous data, disregarding any observations equal to the median \citep{Anhoej:2015}. 
 
 The focus of the \code{crossrun} package is the joint distribution of number of crossings, C, and the length of the longest run, L, in a random data sequence. A run is a sequence of successes or failures, delimited by a different observation or the start or end of the entire sequence. A crossing is two adjacent different observations. 
 
-Figure 1 illustrates runs and crossings in a run chart with 24 random observations. Observations above and below the median represent successes and failures respectively.
+Figure~\ref{figure:fig1}: illustrates runs and crossings in a run chart with 24 random observations. Observations above and below the median represent successes and failures respectively.
 
 \begin{figure}[htbp]
   \centering
-  \caption{A runchart with n = 24 data points. The longest run consists of observations 12-16 below the median. Thus, the length of the longest run is L = 5 in this case. The number of crossings of the median is C = 11.}
-  \label{figure:runchart}
+  \caption{A runchart with n = 24 data points. The longest run consists of observations 12-16 below the median. The length of the longest run is L = 5. The number of crossings of the median is C = 11.}
+  \label{figure:fig1}
   \includegraphics{fig1}
 \end{figure}
 
@@ -69,7 +69,7 @@ Case 2: $f-1<n+1-f$
 
 \section{Case 1, at least as many observations before the first crossing as thereafter}
 
-This is the simplest case. Here, the first $f-1$ observations constitute a run of length $f-1$, and no run in the last $n+f-1$ observations may be longer than that. Therefore, the longest run is $f-1$, and the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the vertical strip $l=f-1$. And, in fact, to only a part of this strip. First, there is at least one crossing, from time $f-1$ to $f$. Also, any further crossings are within the last $n+1-f$ observations, and may be any number between $0$ and $(n+1-f) - 1$. The total number of crossings may therefore be any number between $1$ and $n+1-f$, which means that the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the strip $l=f-1, 1 \leq c \leq n+1-f$. Figure 2 illustrates this in the case $n=24$ and $f=16$.
+This is the simplest case. Here, the first $f-1$ observations constitute a run of length $f-1$, and no run in the last $n+f-1$ observations may be longer than that. Therefore, the longest run is $f-1$, and the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the vertical strip $l=f-1$. And, in fact, to only a part of this strip. First, there is at least one crossing, from time $f-1$ to $f$. Also, any further crossings are within the last $n+1-f$ observations, and may be any number between $0$ and $(n+1-f) - 1$. The total number of crossings may therefore be any number between $1$ and $n+1-f$, which means that the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the strip $l=f-1, 1 \leq c \leq n+1-f$. Figure~\ref{figure:rch}: illustrates this in the case $n=24$ and $f=16$.
 
 \begin{figure}[htbp]
   \centering
@@ -85,9 +85,7 @@ Note that the $n+1-f$ observations after the initial run start on opposite side 
 
 \section{Case 2, fewer observations before the first crossing than thereafter}
 
-As in case 1, the total number of crossings is between $1$ and $n-f+1$. As to the longest run L, it cannot be shorter than $f-1$ or longer than $n-f+1$, and it is necessary to distinguish between values $l=f-1$ and $l \geq f$. A longest run $f-1$ in the entire sequence means that all runs in the last $n-f+1$ observations have length $l \leq f-1$. Therefore $$P_n (C=c,L=f-1 \mid S=1,F=f) = P_{n+1-f} (C=c-1,L \leq f-1 \mid S=0)$$
-(and similarly conditional on S=0). For longer runs, $f \leq l \leq n+1-f$ the longest run has to be within the last n+1-f observations and we have $$P_n (C=c,L=l \mid S=1,F=f) = P_{n+1-f} (C=c-1,L=l \mid S=0)$$
-(and similarly conditional on S=0). All these conditional probabilies, based on a shorter sequence, have already been computed in an iterative computation procedure. This procedure is illustrated in Figure~\ref{figure:rch2}:
+As in case 1, the total number of crossings is between $1$ and $n-f+1$. As to the longest run L, it cannot be shorter than $f-1$ or longer than $n-f+1$, and it is necessary to distinguish between values $l=f-1$ and $l \geq f$. A longest run $f-1$ in the entire sequence means that all runs in the last $n-f+1$ observations have length $l \leq f-1$. Therefore $$P_n (C=c,L=f-1 \mid S=1,F=f) = P_{n+1-f} (C=c-1,L \leq f-1 \mid S=0)$$ (and similarly conditional on S=0). For longer runs, $f \leq l \leq n+1-f$ the longest run has to be within the last n+1-f observations and we have $$P_n (C=c,L=l \mid S=1,F=f) = P_{n+1-f} (C=c-1,L=l \mid S=0)$$ (and similarly conditional on S=0). All these conditional probabilies, based on a shorter sequence, have already been computed in an iterative computation procedure. This procedure is illustrated in Figure~\ref{figure:rch2}:
 
 \begin{figure}[htbp]
   \centering
@@ -164,82 +162,104 @@ c=14&0.8&0&0&0&0&0&0&0&0&0&0&0&0&0&0\\
 The iterative procedure is coded in the function crossrunbin. 
 
 \begin{example}
-crossrunbin <- function(nmax=100, prob=.5, mult=2, prec=120, printn=FALSE) {
-  nill <- mpfr(0,prec)
-  one <- mpfr(1,prec)
-  multm <- mpfr(mult,prec)
-  pm <- mpfr(prob,prec)
-  qm <- one - pm
-  pmultm <- pm*multm
-  qmultm <- qm*multm
-  # conditioning of S= first value, pat: above 0, pbt: below 0
-  # suffix t: probabilities times multm^(n-1). 
-  # n=1:
-  pat <- list(pt1=mpfr2array(one, dim=c(1,1)))
-  pbt <- list(pt1=mpfr2array(one, dim=c(1,1)))
-  pt <- list(pt1=mpfr2array(one, dim=c(1,1))) 
-  qat <- list(pt1=mpfr2array(one, dim=c(1,1))) 
-  qbt <- list(pt1=mpfr2array(one, dim=c(1,1)))
-  qt <- list(pt1=mpfr2array(one, dim=c(1,1)))
+crossrunbin <- function(nmax   = 100, 
+                        prob   = 0.5, 
+                        mult   = 2, 
+                        prec   = 120, 
+                        printn = FALSE) {
+  nill   <- mpfr(0, prec)
+  one    <- mpfr(1, prec)
+  multm  <- mpfr(mult, prec)
+  pm     <- mpfr(prob, prec)
+  qm     <- one - pm
+  pmultm <- pm * multm
+  qmultm <- qm * multm
+  
+  # conditioning of S = first value, pat: above 0, pbt: below 0
+  # suffix t: probabilities times multm^(n - 1). 
+  # n = 1:
+  
+  pat <- list(pt1=mpfr2array(one, dim = c(1, 1)))
+  pbt <- list(pt1=mpfr2array(one, dim = c(1, 1)))
+  pt  <- list(pt1=mpfr2array(one, dim = c(1, 1))) 
+  qat <- list(pt1=mpfr2array(one, dim = c(1, 1))) 
+  qbt <- list(pt1=mpfr2array(one, dim = c(1, 1)))
+  qt  <- list(pt1=mpfr2array(one, dim = c(1, 1)))
+  
   for (nn in 2:nmax) {
-    pat[[nn]] <- mpfr2array(rep(nill,nn*nn), dim=c(nn,nn))
-    pbt[[nn]] <- mpfr2array(rep(nill,nn*nn), dim=c(nn,nn))
+    pat[[nn]]           <- mpfr2array(rep(nill,nn*nn), dim=c(nn,nn))
+    pbt[[nn]]           <- mpfr2array(rep(nill,nn*nn), dim=c(nn,nn))
     rownames(pat[[nn]]) <- c(0:(nn-1))
     rownames(pbt[[nn]]) <- c(0:(nn-1))
     colnames(pat[[nn]]) <- c(1:nn)
     colnames(pbt[[nn]]) <- c(1:nn)
-    pat[[nn]][1,nn] <- (pmultm^(nn-1)) # from cond on no crossing
-    pbt[[nn]][1,nn] <- (qmultm^(nn-1)) # from cond on no crossing
+    pat[[nn]][1, nn]     <- (pmultm^(nn-1)) # from cond on no crossing
+    pbt[[nn]][1, nn]     <- (qmultm^(nn-1)) # from cond on no crossing
+
     for (ff in 2:nn) { # from cond on first crossing at ff
-      if (nn-ff+1<=ff-1) { # if last part shortest:
+      if (nn - ff + 1 <= ff - 1) { # if last part shortest:
         f1 <- ff # unnecessary, but makes code checking easier
-        pat[[nn]][2:(nn-f1+2),f1-1] <-
-          pat[[nn]][2:(nn-f1+2),f1-1] +
-          (pmultm^(f1-2)) * qmultm * qbt[[nn-f1+1]][1:(nn-f1+1),nn-f1+1]
-        pbt[[nn]][2:(nn-f1+2),f1-1] <-
-          pbt[[nn]][2:(nn-f1+2),f1-1] +
-          (qmultm^(f1-2)) * pmultm * qat[[nn-f1+1]][1:(nn-f1+1),nn-f1+1]
+        pat[[nn]][2:(nn - f1 + 2), f1 - 1] <- 
+          pat[[nn]][2:(nn - f1 + 2), f1 - 1] +
+            (pmultm^(f1-2)) * qmultm * 
+              qbt[[nn - f1 + 1]][1:(nn - f1 + 1), nn - f1 + 1]
+        pbt[[nn]][2:(nn - f1 + 2), f1 - 1] <-
+          pbt[[nn]][2:(nn - f1 + 2), f1 - 1] +
+            (qmultm^(f1 - 2)) * pmultm * 
+              qat[[nn - f1 + 1]][1:(nn - f1 + 1), nn - f1 + 1]
       } # end if last part shortest
-      if (nn-ff+1>ff-1) {# if last part longest
+
+      if (nn - ff + 1 > ff - 1) { # if last part longest
         f2 <- ff # unnecessary, but makes code checking easier
-        pat[[nn]][2:(nn-f2+2),f2-1] <-
-          pat[[nn]][2:(nn-f2+2),f2-1] +
-          (pmultm^(f2-2)) * qmultm * qbt[[nn-f2+1]][1:(nn-f2+1),f2-1]
-        pat[[nn]][2:(nn-f2+2),f2:(nn-f2+1)] <-
-          pat[[nn]][2:(nn-f2+2),f2:(nn-f2+1)] +
-          (pmultm^(f2-2)) * qmultm * pbt[[nn-f2+1]][1:(nn-f2+1),f2:(nn-f2+1)]
-        pbt[[nn]][2:(nn-f2+2),f2-1] <-
-          pbt[[nn]][2:(nn-f2+2),f2-1] +
-          (qmultm^(f2-2)) * pmultm * qat[[nn-f2+1]][1:(nn-f2+1),f2-1]
-        pbt[[nn]][2:(nn-f2+2),f2:(nn-f2+1)] <-
-          pbt[[nn]][2:(nn-f2+2),f2:(nn-f2+1)] +
-          (qmultm^(f2-2)) * pmultm * pat[[nn-f2+1]][1:(nn-f2+1),f2:(nn-f2+1)]
+        pat[[nn]][2:(nn - f2 + 2), f2 - 1] <- 
+          pat[[nn]][2:(nn - f2 + 2), f2 - 1] +
+            (pmultm^(f2 - 2)) * 
+              qmultm * 
+                qbt[[nn - f2 + 1]][1:(nn - f2 + 1), f2 - 1]
+        pat[[nn]][2:(nn - f2 + 2), f2:(nn - f2 + 1)] <-
+          pat[[nn]][2:(nn - f2 + 2), f2:(nn - f2 + 1)] +
+            (pmultm^(f2 - 2)) * 
+              qmultm * 
+                pbt[[nn - f2 + 1]][1:(nn - f2 + 1), f2:(nn - f2 + 1)]
+        pbt[[nn]][2:(nn - f2 + 2), f2 - 1] <-
+          pbt[[nn]][2:(nn - f2 + 2), f2 - 1] +
+            (qmultm^(f2 - 2)) * 
+              pmultm * qat[[nn - f2 + 1]][1:(nn - f2 + 1), f2 - 1]
+        pbt[[nn]][2:(nn - f2 + 2), f2:(nn - f2 + 1)] <-
+          pbt[[nn]][2:(nn - f2 + 2), f2:(nn - f2 + 1)] +
+            (qmultm^(f2 - 2)) * 
+              pmultm * 
+                pat[[nn - f2 + 1]][1:(nn - f2 + 1),f2:(nn - f2 + 1)]
       } # end if last part longest
     } # end for ff
-    pt[[nn]] <- pm*pat[[nn]] + qm*pbt[[nn]]
-    qat[[nn]] <- cumsumm(pat[[nn]])
-    qbt[[nn]] <- cumsumm(pbt[[nn]])
-    qt[[nn]] <- pm*qat[[nn]] + qm*qbt[[nn]]
-    rownames(pt[[nn]]) <- c(0:(nn-1))
-    colnames(pt[[nn]]) <- c(1:nn)
-    rownames(qat[[nn]]) <- c(0:(nn-1))
+    
+    pt[[nn]]            <- pm * pat[[nn]] + qm * pbt[[nn]]
+    qat[[nn]]           <- cumsumm(pat[[nn]])
+    qbt[[nn]]           <- cumsumm(pbt[[nn]])
+    qt[[nn]]            <- pm*qat[[nn]] + qm*qbt[[nn]]
+    rownames(pt[[nn]])  <- c(0:(nn - 1))
+    colnames(pt[[nn]])  <- c(1:nn)
+    rownames(qat[[nn]]) <- c(0:(nn - 1))
     colnames(qat[[nn]]) <- c(1:nn)
-    rownames(qbt[[nn]]) <- c(0:(nn-1))
-    rownames(qat[[nn]]) <- c(0:(nn-1))
-    colnames(qt[[nn]]) <- c(1:nn)
-    colnames(qt[[nn]]) <- c(1:nn)
+    rownames(qbt[[nn]]) <- c(0:(nn - 1))
+    rownames(qat[[nn]]) <- c(0:(nn - 1))
+    colnames(qt[[nn]])  <- c(1:nn)
+    colnames(qt[[nn]])  <- c(1:nn)
+
     if (printn) {
       print(nn)
       print(Sys.time())
     } # end optional timing information
   } # end for nn
+
   names(pat) <-paste("pat", 1:nmax, sep="")
   names(pbt) <-paste("pbt", 1:nmax, sep="")
-  names(pt) <-paste("pt", 1:nmax, sep="")
+  names(pt)  <-paste("pt",  1:nmax, sep="")
   names(qat) <-paste("qat", 1:nmax, sep="")
   names(qbt) <-paste("qbt", 1:nmax, sep="")
-  names(qt) <-paste("qt", 1:nmax, sep="")
-  return(list(pat=pat,pbt=pbt,pt=pt,qat=qat,qbt=qbt,qt=qt))
+  names(qt)  <-paste("qt",  1:nmax, sep="")
+
+  return(list(pat = pat, pbt = pbt, pt = pt, qat = qat, qbt = qbt, qt = qt))
 } # end function crossrunbin
 \end{example}
 
@@ -283,7 +303,14 @@ $$\text{NFN}_{n,m} (C=c, L=l, G=g) = \text{NFN}_{n-g,m} (C=c-1, L=l)$$
 
 Now all cases are covered, and together these formulas make it possible to compute all $\text{NFI}_{n,m} (C=c, L=l)$ and $\text{NFN}_{n,m} (C=c, L=l)$ based on the smaller sequence after the initial run.
 
-\section{Temporary section: Detailed computation, illustrated for n=7}
+\section{Condlusions}
+
+The \code{crossrun} package includes functions for computing the probabilities of the joint distribution of longest run and number of crossings in random data series. To our knowledge, this distribution has not been studied before.
+
+
+
+
+\section{Temporary section: Detailed computation, illustrated for n = 7}
 
 This section should be removed before publication, but is included to aid our own comprehension of the procedure. First some generalities on the times representation $$\text{Pt}_n ( C=c, L=l \mid S=1 ) = m^{n-1} P_n ( C=c, L=l \mid S=1 )$$ where m is a multiplier normally set as m=2 (the case of conditioning on S=0, starting below the midline, is similar). Denoting the success probability as p and the failure probability as q=1-p the main decomposition for probabilities is $$P_n ( C=c, L=l \mid S=1) = p^{n-1} \cdot P_n ( C=c, L=l \mid S=1, F=1) +$$
 
