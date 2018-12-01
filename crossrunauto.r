@@ -125,6 +125,7 @@ rm(cr20,cr20.6,cra20,cra20.6,cra20.6.u.5,cra20.u.4)
 # p=0.6, some dependence, nmax=100:
 cra100.6.u.5 <- crossrunauto(nmax=100, prob=0.6, changeprob=.5,
                             printn=TRUE)$pt
+save(cra100.6.u.5, file="./cra100.6.u.5.Rdata")
 
 # simulation with autocorrelation, auxiliary function:
 clf <- function(seri, type=0) {
@@ -132,7 +133,7 @@ clf <- function(seri, type=0) {
   if (type==0) res <- length(rleser) - 1
   if (type==1) res <- max(rleser)
   return(res)
-} # end function clf
+} # end auxiliary function clf
 # function for simulation with autocorrelation:
 simclauto <- function (nser = 100, nsim = 1e+05, prob=0.5, changeprob=0.4) {
   if (prob>=0.5) {
