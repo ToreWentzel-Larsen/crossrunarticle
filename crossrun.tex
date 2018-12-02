@@ -82,17 +82,7 @@ Case 2: $f-1<n+1-f$
 
 \section{Case 1, at least as many observations before the first crossing as thereafter}
 
-This is the simplest case. Here, the first $f-1$ observations constitute a run of length $f-1$, and no run in the last $n+f-1$ observations may be longer than that. Therefore, the longest run is $f-1$, and the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the vertical strip $l=f-1$. And, in fact, to only a part of this strip. First, there is at least one crossing, from time $f-1$ to $f$. Also, any further crossings are within the last $n+1-f$ observations, and may be any number between $0$ and $(n+1-f) - 1$. The total number of crossings may therefore be any number between $1$ and $n+1-f$, which means that the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the strip $l=f-1, 1 \leq c \leq n+1-f$. Figure~\ref{figure:rch} below illustrates this in the case $n=24$ and $f=16$.
-% ToRe: figuren kan ikke legges "here" [h...] på grunn av plassmangel, så da legges den "top", 
-% øverst på neste side. Det betyr at "aqbove" må tas vekk i et avsnitt nedenfor.
-
-\begin{figure}[htbp]
-  \centering
-  \caption{A runs chart with n=24 time points, starting above the 
-  midline ($S=1$), and with the first crossing ending at time 16 ($F=16$). The last 9 observations, from time 16 on, start below the midline ($S=0$). The figure also shows (upper right) the joint distribution of crossings and runs for the entire sequence conditional on ($S=1, F=16$), and (upper left) the joint distribution among the last 9 observations conditional on ($S=0$).}
-  \label{figure:rch}
-  \includegraphics[width=\textwidth]{run24}
-\end{figure}
+This is the simplest case. Here, the first $f-1$ observations constitute a run of length $f-1$, and no run in the last $n+f-1$ observations may be longer than that. Therefore, the longest run is $f-1$, and the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the vertical strip $l=f-1$. And, in fact, to only a part of this strip. First, there is at least one crossing, from time $f-1$ to $f$. Also, any further crossings are within the last $n+1-f$ observations, and may be any number between $0$ and $(n+1-f) - 1$. The total number of crossings may therefore be any number between $1$ and $n+1-f$, which means that the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the strip $l=f-1, 1 \leq c \leq n+1-f$. 
 
 The non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f), l=f-1, 1 \leq c \leq n+1-f$ are somehow determined by what happens within the last $n+1-f$ observations. The precise procedure for computing these probabilities is illustrated by the red arrows in Figure~\ref{figure:rch}. The clue is to see that the last $n+1-f$ observations constitute a situation identical to the original $n$ observations, only shorter, and with the starting observation fixed on the opposite side of the central line. To put it into a formula, $$P_n (C=c,L=f-1 \mid S=1,F=f)=P_{n+1-f} (C=c-1 \mid S=0)$$ where $C=c-1$ is because the crossing from $f-1$ to $f$ is just before the last $n+1-f$ observations. Similarly, $$P_n (C=c,L=f-1 \mid S=0,F=f)=P_{n+1-f} (C=c-1 \mid S=1)$$ The probabilities on the right hand side of these formulas are for a lower number of observations and are therefore already computed in the iterative procedure. 
 
@@ -108,17 +98,7 @@ $$P_n (C=c,L=f-1 \mid S=1,F=f) = P_{n+1-f} (C=c-1,L \leq f-1 \mid S=0)$$
 
 $$P_n (C=c,L=l \mid S=1,F=f) = P_{n+1-f} (C=c-1,L=l \mid S=0)$$ 
 
-(and similarly conditional on $S = 0$). All these conditional probabilies, based on a shorter sequence, have already been computed in an iterative computation procedure. This procedure is illustrated in Figure~\ref{figure:rch2} below.
-%ToRe: E>rstattet kolon med below, det er ikke plass til figuren rett under så den kommer øverst på neste side
-
-\begin{figure}[htbp]
-  \centering
-  \caption{A runs chart with n=24 time points, starting above the 
-  midline ($S=1$), and with the first crossing ending at time 9 ($F=9$). Also (top right) the joint distribution of C and L conditional on ($S=1, F=9$), and (top left) the joint distribution among the last 16 observations conditional on ($S=0$), including a red strip representing the cumulative sum of the first $f-1=8$ columns, and a blue rectangle representing joint probabilities from $L=9$ on. The corresponding contributions to the joint probabilities for $n=24$ are shown in the same colors (top right).}
-  \label{figure:rch2}
-  \includegraphics[width=\textwidth]{run24case2}
-\end{figure}
-
+(and similarly conditional on $S = 0$). All these conditional probabilies, based on a shorter sequence, have already been computed in an iterative computation procedure.
 \section{Simplifications in the symmetric case}
 
 For $p=\frac{1}{2}$ there is a symmetry between crossings up or down, and between success and failure runs. Therefore conditioning on the first observation is not necessary, although it is still necessary to partition on the first crossing F. Also, by an induction argument following the iterative procedure, all these probabilities are integer multiples of ${\left( \frac{1}{2} \right)}^{n-1}$ and, in fact, represent a partition of the binomial coefficients in the distribution of C, by the values $l=1, \ldots ,n$ of L.  
@@ -183,35 +163,25 @@ c=14&0.8&0&0&0&0&0&0&0&0&0&0&0&0&0&0\\
 
 \section{Limitations and planned extensions}
 
-% Jeg forstår ikke "independent, but not necessarily identical, observations".
-% ToRe: Dette passer egentlig ikke inn her i og med at crossrunchange allerede er 
-% med i pakken crossrun, så dette er ikke en limitation og ikke en planned extension
-% Jeg har likevel latt det ligge her inntil videre, og redigert litt på det.
-% Jeg har lagt det først i limitations nå, men det bør nok stå et sted ovenfor.
-The iterative procedure has been generalized to time series where the success probability may vary, as long as the observations are assumed to be independent. 
-% ToRe: Jeg har forsøkt å skrive dette om litt. Generelt er det slik at uavhengighet og identisk
-% fordeling er to forskjellige forutsetninger, og den ene kan være oppfylt uten den andre.
-% Et eksempel: Noe har hendt så observasjonene har økt. Da vil det ettert det bli flere suksesser og 
-% færre failures hvis midtlinjer ligger fast. Men om første observasjon etter denne forandringen blir
-% en suksess eller en failure, kan være helt uavhengig av om siste observasjon før endringen er
-% suksess eller failure. Omvendt kan det være en situasjon der neste observasjonhar en tendens til å
-% ligne den forrige, men sannsynlioghet for suksess kan være den samme. Dette er tilfelle i 
-% vignetten for crossrunauto (konstans-antagelsen der).
-This is implemented in a function \code{crossrunchange}. Here, the success probability is replaced by a sequence of probabilities, one for each observation. 
+The iterative procedure has been generalized to time series where the success probability may vary, as long as the observations are assumed to be independent. This is implemented in a function \code{crossrunchange}. Here, the success probability is replaced by a sequence of probabilities, one for each observation.
 
 There are at present two main limitations. First, in applications in statistical process control when observations are categorized as above or below a midline, the iterative procedure presupposes that the midline is determined from previous data, usually the median. If the midline is the median in the same data set the procedure does not apply. Work is, however, underway to tackle this case. Briefly, the median divides the useful observations (observations not on the median) 
 % ToRe: ta med her en referanse til 
 % https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0113825 
 % eller en annen artikkel der dette er beskrevet mer i detalj
 into two parts of equal size. The useful observations are then necessarily an even number, say $n=2m$,  the useful observations above the median is a subset of size m, and all such subsets are equally probable. To find the number of such subsets for each combination of the number of crossing and the longest run is in fact tractable if it is generalized to all subsets, not necessarily of size $m=n/2$, and an iterative procedure resembling the procedure implemented in `crossrunbin` has been developed. The procedure has, due to the large number of such subsets, higher algorithmic complexity in terms if computation time and storage requirements, and it has so far only been possible to use it up to $n=64$.
-% ToRe: hvis vi lar det bli med dette om crossrunem i artiklen kan vi kanskje etterpå skrive en 
-% teknisk/teoretisk vignett med detaljene, eller eventuelt en senere artikkel der vi tar med
-% detaljer både om crossrunem og crossrunauto
+
 Preliminary investigations seem to indicate that the difference from the case of a predetermined midline is smaller for longer sequences. A function \code{crossrunem} is planned for inclusion in an update of the package \code{crossrun}. 
 
 Another important limitation is that the iterative procedure does not apply for autocorrelated time series. Here also, work is in progress in a simple autocorrelation model in which the probabilities of "success" and "failure" in each observation may depend on the previous observation only, and a function \code{crossrunauto} is planned for inclusion in a future update. The practical value of this procedure is likely to be limited  since decision rules based on the number of crossings and the longest run are probably not particularly useful for autocorrelated series, but at leasty the procedure may be used to investigate the extent of the problem.
 
 A third limitation is that the code has so far only been checked for $n \leq 100$. In that range it seems to work well. It has been checked with manual computations for $n \leq 6$, and with 100,000 simulations for $n=100$. Specifically, the mean and standard deviations for both C and L have been computed, as well as the mean of $C \cdot L$ and also the cumulative distribution functions of C and L separately, with no substantial deviations. It has also been checked for $n \leq 100$ that the marginal distribution of C computed from the joint distribion agrees with the correct binomial distribution in the symmetric case. These last investigations were, in fact, what pointed to the necessity to base the code on Rmpfr. The performance of the procedure has not, however, so far been checked for $n>100$. For applications to statistical process control $n \leq 100$ should be sufficient in most cases, but other applications may require higher n.
+
+\section{Conclusions}
+ 
+The \code{crossrun} package includes functions for computing the probabilities of the joint distribution of longest run and number of crossings in random data series. To our knowledge, this distribution has not been studied before.
+ 
+The ability to calculate exact probabilities for the joint distribution allows for the development of better prediction limits for longest run and crossings in random data series. In turn, this allows for better separation of signal and noise, i.e. random and non-random variation, in, for example, statistical process control, gaming fraud detection, or search for extraterrestrial life, to name a few.
 
 \section{Appendix 1: R code for the iteration procedure}
 
