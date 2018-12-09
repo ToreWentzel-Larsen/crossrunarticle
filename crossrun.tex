@@ -12,13 +12,13 @@ An abstract of less than 150 words.
 
 The setting is defined by a number of independent observations from a Bernoulli distribution with the same success probability. In statistical process control, our main intended application, this may be the useful observations in a runchart, recording values above and below the median from previous data, disregarding any observations equal to the median \citep{Anhoej:2015}. 
 
-The focus of the \code{crossrun} package is the joint distribution of number of crossings, C, and the length of the longest run, L, in random data sequences. A run is a sequence of successes or failures, delimited by a different observation or the start or end of the entire sequence. A crossing is two adjacent different observations. 
+The focus of the \code{crossrun} package is the joint distribution of number of crossings, $C$, and the length of the longest run, $L$, in random data sequences. A run is a sequence of successes or failures, delimited by a different observation or the start or end of the entire sequence. A crossing is two adjacent different observations. 
 
 Figure~\ref{figure:fig1}: illustrates runs and crossings in a run chart with 24 random observations. Observations above and below the median represent successes and failures respectively.
 
 \begin{figure}[htbp]
   \centering
-  \caption{A runchart with n = 24 data points. The longest run consists of observations 12-16 below the median. The length of the longest run is L = 5. The number of crossings of the median is C = 11.}
+  \caption{A runchart with $n=24$ data points. The longest run consists of observations 12-16 below the median. The length of the longest run is $L=5$. The number of crossings of the median is $C=11$.}
   \label{figure:fig1}
   \includegraphics{fig1}
 \end{figure}
@@ -27,52 +27,42 @@ While the number of crossings follows a binomial distribution in the symmetric c
 
 \section{The iterative procedure, setting}
 
-In n independent Bernoulli observations with success probability $p$ and failure probability $q = 1 - p$, values are denoted by 1 (success with probability p) or 0. A crossing consists of two consecutive different values, and a run of length $l$ consists of $l$ successive observations, delimited by a crossing or the first or last observation. The possible values of the number C of crossings are $c=0, \ldots ,n-1$ and the possible values for the length L of the longest run are $l=1, \ldots ,n$. The joint probabilities of L and C for given n are denoted by $P_n (L=l,C=c)$.
+In $n$ independent Bernoulli observations with success probability $p$ and failure probability $q = 1 - p$, values are denoted by 1 (success with probability $p$) or 0. A crossing consists of two consecutive different values, and a run of length $l$ consists of $l$ successive observations, delimited by a crossing or the first or last observation. The possible values of the number $C$ of crossings are $c=0, \ldots ,n-1$ and the possible values for the length $L$ of the longest run are $l=1, \ldots ,n$. The joint probabilities of $L$ and $C$ for given $n$ are denoted by $P_n (L=l,C=c)$.
 
-The iterative procedure involves conditioning on the first observation denoted by S, with values 1 for success (probability p) and 0 for failure (probability q). The iterative procedure computes the conditional probabilities 
+The iterative procedure involves conditioning on the first observation denoted by $S$, with values 1 for success (probability $p$) and 0 for failure (probability $q$). The iterative procedure computes the conditional probabilities 
 
 $$P_n (L=l,C=c \mid S=1), P_n (L=l,C=c \mid S=0)$$
 
-This conditioning on the first observation is an essential part of the procedure. One way to see that this is reasonable is to consider the case when p is close to 1. Then most observations are successes, most runs are success runs and the conditional joint distribution of runs and crossings is quite different dependent on the first observation. It is sufficient to be able to compute these conditional distributions, because the unconditional joint distribution is
+This conditioning on the first observation is an essential part of the procedure. One way to see that this is reasonable is to consider the case when $p$ is close to 1. Then most observations are successes, most runs are success runs and the conditional joint distribution of runs and crossings is quite different dependent on the first observation. It is sufficient to be able to compute these conditional distributions, because the unconditional joint distribution is $$P_n (L=l,C=c) = P_n (L=l,C=c \mid S=1) \cdot p + P_n (L=l,C=c \mid S=0) \cdot q$$ For the iterative procedure to work it is also necessary to take another variable into account, the first crossing. More precisely, we denote the end position of the first crossing by $F$, with values $f=2, \ldots ,n$. An additional value $f=1$ denotes, by convention, the case of no crossing. The joint probabilities for $C$ and $L$ conditional on $S$ are partioned by further conditioning on $F$ as detailed below.
 
-$$P_n (L=l,C=c) = P_n (L=l,C=c \mid S=1) \cdot p + P_n (L=l,C=c \mid S=0) \cdot q$$
+It is important to underline that the conditioning variables $S$ and $F$ are not parameters of the distribution but useful constructions that help break down the iterative procedure in manageable parts.
 
-For the iterative procedure to work it is also necessary to take another variable into account, the first crossing. More precisely, we denote the end position of the first crossing by F, with values $f=2, \ldots ,n$. An additional value $f=1$ denotes, by convention, the case of no crossing. The joint probabilities for C and L conditional on S are partioned by further conditioning on F as detailed below.
+This article first describes the setting for the iterative computation procedure and its initial stage, next introduces conditioning on the starting position and partitioning on the position of the first crossing, and the joint distribution of the number of crossings and the longest run conditional on these variables. The computation procedure is different in two cases that are subsequently described. 
 
-It is important to underline that the conditioning variables S and F are not parameters of the distribution but useful constructions that help break down the iterative procedure in manageable parts.
-
-This article first describes the setting for the iterative computation procedure and its initial stage, next introduces conditioning on the starting position and partitioning on the position of the first crossing and the joint distribution of the number of crossings and the longest run conditional on these variables. The computation procedure is different in two cases that are subsequently described. 
-
-After the exposition of the iterative procedure follows a brief comment on the simpler symmetric case, and the precision of the procedure is discussed. The resulting joint distribution is described in a simple case also included in the package vignette, and procedures for checking are briefly commented.
-% ToRe: Må skrive om, dette er forkortet og ligger i Limitations and planned extensions nå
-Finally, the case where the median is determined from the data itself is considered and a similar procedure in that case is outlined. This case is not yet included in the \code{crossrun} package.
+After the exposition of the iterative procedure follows a brief comment on the simpler symmetric case, and the precision of the procedure is discussed. The resulting joint distribution is described in a simple case, and procedures for checking are briefly commented. Next follows a section on limitations of the procedures in \code{crossrun} and a brief description of ongoing work to address these limitations. Finally, a Conclusions section summarizes the article. Three appendices are included, one giving details on the "times" representation in which the joint distributions are actually stored, as described in the section on precision, one with code for the main function \code{crossrunbin} and one showing the details in the iterative procedure for a small value of $n$. 
 
 \section{The conditional probabilities with one observation}
 
-First we present the starting point of the iterative procedure, the conditional probabilities in  the rather redundant case with only one observation. If $n = 1$, 0 is the only possible value of C and 1 the only possible value of L, therefore $P_1 (C=0,L=1 \mid S=1) = P_1 (C=0,L=1 \mid S=0) = 1$. In this case the joint distribution matrices of C and L conditional on $S=1$ or $S=0$ are simple 1 by 1 identity matrices. Moving to more than one observation, the next step is presenting the conditional distribution of the end position F of the first crossing, conditional on the starting position S.
+First we present the starting point of the iterative procedure, the conditional probabilities in  the rather redundant case with only one observation. If $n = 1$, 0 is the only possible value of $C$ and 1 the only possible value of $L$, therefore $P_1 (C=0,L=1 \mid S=1) = P_1 (C=0,L=1 \mid S=0) = 1$. In this case the joint distribution matrices of $C$ and $L$ conditional on $S=1$ or $S=0$ are simple $1 \times 1$ identity matrices. Moving to more than one observation, the next step is presenting the conditional distribution of the end position $F$ of the first crossing, conditional on the starting position  $S$.
 
 \section{The distribution of the first crossing conditional on the starting position}
 
-% Jeg er usikker på dette afsnit. Særligt anden sætning. Hvordan kan første værdi være f=2? ToRe: Rettet
+% Jeg er usikker pÃ¥ dette afsnit. SÃ¦rligt anden sÃ¦tning. Hvordan kan fÃ¸rste vÃ¦rdi vÃ¦re f=2? ToRe: Rettet
 If the first value is 1 (success), no crossing means that all the remaining $n-1$ values are also 1, therefore $P_n (F=1 \mid S=1) = p^{n-1}$. Similarly, $P_n(F=1 \mid S=0) = q^{n-1}$. Next, if $f=2, \cdots ,n$ and the first value is a success, $F=f$ means that the sequence starts with a success, then $f-2$ more successes and then one failure. Therefore, 
 
-$$P_n (F=f \mid S=1) = p^{f-2} \cdot q, P_n (F=f \mid S=0) =q^{f-2} \cdot p, f=2, \ldots ,n$$
-
-where the last formula is based on a similar argument conditional on $S = 0$. In the following, arguments will in many cases be given for $S = 1$ only, and similar results for $S = 0$ will be stated with no explicit arguments. By symmetry, these results will simply involve replacing p by q. In the next step the formulas in this section will be used for partitioning the joint conditional probabilities for C and L given S, by the position F of the first crossing. 
+$$P_n (F=f \mid S=1) = p^{f-2} \cdot q, P_n (F=f \mid S=0) =q^{f-2} \cdot p, f=2, \ldots ,n$$ where the last formula is based on a similar argument conditional on $S = 0$. In the following, arguments will in many cases be given for $S = 1$ only, and similar results for $S = 0$ will be stated with no explicit arguments. By symmetry, these results will simply involve replacing $p$ by $q$. In the next step the formulas in this section will be used for partitioning the joint conditional probabilities for $C$ and $L$ given $S$, by the position $F$ of the first crossing. 
 
 \section{Partitioning by the position of the first crossing}
 
-Partitioning on  F we have
+Partitioning on  $F$ we have
 
-$$P_n (L=l,C=c \mid S=1) = \sum_{f=1}^n P_n(L=l,C=c \mid S=1,F=f) \cdot P_n (F=f \mid S=1)$$
+$$P_n (L=l,C=c \mid S=1) = \sum_{f=1}^n P_n(L=l,C=c \mid S=1,F=f) \cdot P_n (F=f \mid S=1)$$ where, as shown in the previous section, $P_n (F=f \mid S=1) =p^{f-2}q$ if $f \geq 2$ and $P_n (F=1 \mid S=1) = p^{n-1}$. The formula for $P_n (L=l,C=c \mid S=0)$ is the same, just interchanging $p$ and $q$. This implies that the joint probabilities of $C$ and $L$ conditional on $S$ may be computed if it is possible to compute all the joint probabilities of $C$ and $L$ conditional on $S$ and $F$. This is the next step.
 
-where, as shown in the previous section, $P_n (F=f \mid S=1) =p^{f-2}q$ if $f \geq 2$ and $P_n (F=1 \mid S=1) = p^{n-1}$. The formula for $P_n (L=l,C=c \mid S=0)$ is the same, just interchanging p and q. This implies that the joint probabilities of C and L conditional on S may be computed if it is possible to compute all the joint probabilities of C and L conditional on S and F. This is the next step.
+\section{Joint distribution conditional on both $S$ and $F$}
 
-\section{Joint distribution conditional on both S and F}
+First, if there is no crossing ($F=1$) the entire sequence constitutes one single run, therefore $$P_n (C=0,L=1 \mid S=1,F=1)=P_n (C=0,L=1 \mid S=0,F=1)=1$$ and all other conditional probabilities are 0. Thus, the matrices of joint probabilities of $C$ and $L$ conditional on $F=1$ together with each value of S, are matrices with all components equal to 0, except for a 1 in the upper right corner.
 
-First, if there is no crossing ($F=1$) the entire sequence constitutes one single run, therefore $$P_n (C=0,L=1 \mid S=1,F=1)=P_n (C=0,L=1 \mid S=0,F=1)=1$$ and all other conditional probabilities are 0. Thus, the matrices of joint probabilities of C and L conditional on $F=1$ together with each value of S, are matrices with all components equal to 0, except for a 1 in the upper right corner.
-
-If crossings do occur ($f=2, \ldots ,n$), the conditional probabilities $$P_n (C=c,L=l \mid S=1,F=f), P_n (C=c,L=l \mid S=0,F=f)$$ are more complicated. The key to computing these probabilities is to recognize that, except for the initial run of $f-1$ observations, the remaining observations constitute $n-(f-1)=n+1-f$ identical and independent Bernoulli observations with success probability p, they represent the same setting as for all n observations, just a shorter sequence. Further, these $n+1-f$ observations are also conditional on a fixed value of their first observation, only that this fixed value is the opposite as in the entire sequence. This is because the last $n+1-f$ observations start with the  observation after the first crossing. 
+If crossings do occur ($f=2, \ldots ,n$), the conditional probabilities $$P_n (C=c,L=l \mid S=1,F=f), P_n (C=c,L=l \mid S=0,F=f)$$ are more complicated. The key to computing these probabilities is to recognize that, except for the initial run of $f-1$ observations, the remaining observations constitute $n-(f-1)=n+1-f$ identical and independent Bernoulli observations with success probability $p$, they represent the same setting as for all $n$ observations, just a shorter sequence. Further, these $n+1-f$ observations are also conditional on a fixed value of their first observation, only that this fixed value is the opposite as in the entire sequence. This is because the last $n+1-f$ observations start with the  observation after the first crossing. 
 
 We now have to distinguish between two cases. In case 1, the $f-1$ observations in the initial run,  before the first crossing, are at least as many as the last $n+1-f$ ones. In case 2, the initial run is shorter:
 
@@ -84,77 +74,73 @@ Case 2: $f-1<n+1-f$
 
 This is the simplest case. Here, the first $f-1$ observations constitute a run of length $f-1$, and no run in the last $n+f-1$ observations may be longer than that. Therefore, the longest run is $f-1$, and the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the vertical strip $l=f-1$. And, in fact, to only a part of this strip. First, there is at least one crossing, from time $f-1$ to $f$. Also, any further crossings are within the last $n+1-f$ observations, and may be any number between $0$ and $(n+1-f) - 1$. The total number of crossings may therefore be any number between $1$ and $n+1-f$, which means that the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the strip $l=f-1, 1 \leq c \leq n+1-f$. 
 
-The non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f), l=f-1, 1 \leq c \leq n+1-f$ are somehow determined by what happens within the last $n+1-f$ observations. The precise procedure for computing these probabilities is illustrated by the red arrows in Figure~\ref{figure:rch}. The clue is to see that the last $n+1-f$ observations constitute a situation identical to the original $n$ observations, only shorter, and with the starting observation fixed on the opposite side of the central line. To put it into a formula, $$P_n (C=c,L=f-1 \mid S=1,F=f)=P_{n+1-f} (C=c-1 \mid S=0)$$ where $C=c-1$ is because the crossing from $f-1$ to $f$ is just before the last $n+1-f$ observations. Similarly, $$P_n (C=c,L=f-1 \mid S=0,F=f)=P_{n+1-f} (C=c-1 \mid S=1)$$ The probabilities on the right hand side of these formulas are for a lower number of observations and are therefore already computed in the iterative procedure. 
+The non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f), l=f-1, 1 \leq c \leq n+1-f$ are somehow determined by what happens within the last $n+1-f$ observations. More specifically, the last $n+1-f$ observations constitute a sequence of the same type as the original $n$ observations, only shorter, and with the starting observation fixed on the opposite side of the central line. To put it into a formula, $$P_n (C=c,L=f-1 \mid S=1,F=f)=P_{n+1-f} (C=c-1 \mid S=0)$$ where $C=c-1$ is because the crossing from $f-1$ to $f$ is just before the last $n+1-f$ observations. Similarly, $$P_n (C=c,L=f-1 \mid S=0,F=f)=P_{n+1-f} (C=c-1 \mid S=1)$$ The probabilities on the right hand side of these formulas are for a lower number of observations and are therefore already computed in the iterative procedure. 
 
 Note that the $n+1-f$ observations after the initial run start on opposite side of the centre line. Therefore it is necessary to compute conditional probabilities conditional on starting values both above and below the centre line in the iterative procedure, they cannot be computed separately. The computations are a bit moe complicated in the second case, when the initial run is the shorter part, but the main idea is the same.
 
 \section{Case 2, fewer observations before the first crossing than thereafter}
 
-As in case 1, the total number of crossings is between $1$ and $n-f+1$. As to the longest run L, it cannot be shorter than $f-1$ or longer than $n-f+1$, and it is necessary to distinguish between values $l=f-1$ and $l \geq f$. A longest run $f-1$ in the entire sequence means that all runs in the last $n-f+1$ observations have length $l \leq f-1$. Therefore 
+As in case 1, the total number of crossings is between 1 and $n-f+1$. As to the longest run $L$, it cannot be shorter than $f-1$ or longer than $n-f+1$, and it is necessary to distinguish between values $l=f-1$ and $l \geq f$. A longest run $f-1$ in the entire sequence means that all runs in the last $n-f+1$ observations have length $l \leq f-1$. Therefore $$P_n (C=c,L=f-1 \mid S=1,F=f) = P_{n+1-f} (C=c-1,L \leq f-1 \mid S=0)$$(and similarly conditional on $S=0$). For longer runs, $f \leq l \leq n+1-f$ the longest run has to be within the last $n+1-f$ observations and we have $$P_n (C=c,L=l \mid S=1,F=f) = P_{n+1-f} (C=c-1,L=l \mid S=0)$$(and similarly conditional on $S = 0$). All these conditional probabilies, based on a shorter sequence, have already been computed in an iterative computation procedure.
 
-$$P_n (C=c,L=f-1 \mid S=1,F=f) = P_{n+1-f} (C=c-1,L \leq f-1 \mid S=0)$$ 
-
-(and similarly conditional on $S=0$). For longer runs, $f \leq l \leq n+1-f$ the longest run has to be within the last $n+1-f$ observations and we have 
-
-$$P_n (C=c,L=l \mid S=1,F=f) = P_{n+1-f} (C=c-1,L=l \mid S=0)$$ 
-
-(and similarly conditional on $S = 0$). All these conditional probabilies, based on a shorter sequence, have already been computed in an iterative computation procedure.
 \section{Simplifications in the symmetric case}
 
-For $p=\frac{1}{2}$ there is a symmetry between crossings up or down, and between success and failure runs. Therefore conditioning on the first observation is not necessary, although it is still necessary to partition on the first crossing F. Also, by an induction argument following the iterative procedure, all these probabilities are integer multiples of ${\left( \frac{1}{2} \right)}^{n-1}$ and, in fact, represent a partition of the binomial coefficients in the distribution of C, by the values $l=1, \ldots ,n$ of L.  
+For $p=\frac{1}{2}$ there is a symmetry between crossings up or down, and between success and failure runs. Therefore conditioning on the first observation is not necessary, although it is still necessary to partition on the first crossing $F$. Also, by an induction argument following the iterative procedure, all these probabilities are integer multiples of ${\left( \frac{1}{2} \right)}^{n-1}$ and, in fact, represent a partition of the binomial coefficients in the distribution of $C$, by the values $l=1, \ldots ,n$ of L.  
 
 \section{Precision considerations}
 
-To enhance precision, computations have been performed in the R package Rmpfr \citep{Rmpfr}, an R interface to the GNU MPFR library \citep{FouLHLPZ-2007}. Preliminary investigations pointed to precision problems above values about 50 for sequence length $n$ without this increased precision, but no such problems up to $n=100$ when using Rmpfr. To further enhance precision, probabilities have been multiplied by $m^{n-1}$ where m is a multiplier with default value 2. Thereby very small numbers are avoided, at least to some extent, and the numbers computed are integers in the symmetric case. The joint probabilities for $n=15$ are shown below in this representation:
+To enhance precision, computations have been performed in the R package \code{Rmpfr} \citep{Rmpfr}, an R interface to the GNU MPFR library \citep{FouLHLPZ-2007}. Preliminary investigations pointed to precision problems above values about 50 for sequence length $n$ without this increased precision, but no such problems up to $n=100$ when using \code{Rmpfr}. To further enhance precision, probabilities have been multiplied by $m^{n-1}$ where $m$ is a multiplier with default value 2. Thereby very small numbers are avoided, at least to some extent, and the numbers computed are integers in the symmetric case. The joint probabilities for $n=16$ are shown below in this representation:
+% forandret fra 15 til 16 for å redusere overlapp med vignetten.
 
 \tiny{
-\begin{tabular}{l | l l l l l l l l l l l l l l l}
+\begin{tabular}{l | l l l l l l l l l l l l l l l l}
 \hline
-n=15&l=1&l=2&l=3&l=4&l=5&l=6&l=7&l=8&l=9&l=10&l=11&l=12&l=13&l=14&l=15\\
+n=15&l=1&l=2&l=3&l=4&l=5&l=6&l=7&l=8&l=9&l=10&l=11&l=12&l=13&l=14&l=15&l=16\\
 \hline
-c= 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 1\\
-c= 1& 0& 0& 0& 0& 0& 0& 0& 2& 2& 2& 2& 2& 2& 2& 0\\
-c= 2& 0& 0& 0& 0& 1& 9& 18& 18& 15& 12& 9& 6& 3& 0& 0\\
-c= 3& 0& 0& 0& 4& 48& 88& 84& 60& 40& 24& 12& 4& 0& 0& 0\\
-c= 4& 0& 0& 1& 100& 280& 270& 175& 100& 50& 20& 5& 0& 0& 0& 0\\
-c= 5& 0& 0& 50& 530& 666& 420& 210& 90& 30& 6& 0& 0& 0& 0& 0\\
-c= 6& 0& 0& 357& 1197& 861& 392& 147& 42& 7& 0& 0& 0& 0& 0& 0\\
-c= 7& 0& 8& 1008& 1456& 672& 224& 56& 8& 0& 0& 0& 0& 0& 0& 0\\
-c= 8& 0& 84& 1470& 1044& 324& 72& 9& 0& 0& 0& 0& 0& 0& 0& 0\\
-c= 9& 0& 252& 1200& 450& 90& 10& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
-c=10& 0& 330& 550& 110& 11& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
-c=11& 0& 220& 132& 12& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
-c=12& 0& 78& 13& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
-c=13& 0& 14& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
-c=14& 1& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
+c= 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 1\\
+c= 1& 0& 0& 0& 0& 0& 0& 0& 1& 2& 2& 2& 2& 2& 2& 2& 0\\
+c= 2& 0& 0& 0& 0& 0& 6& 15& 21& 18& 15& 12& 9& 6& 3& 0& 0\\
+c= 3& 0& 0& 0& 1& 34& 90& 106& 84& 60& 40& 24& 12& 4& 0& 0& 0\\
+c= 4& 0& 0& 0& 65& 300& 370& 280& 175& 100& 50& 20& 5& 0& 0& 0& 0\\
+c= 5& 0& 0& 21& 525& 960& 741& 420& 210& 90& 30& 6& 0& 0& 0& 0& 0\\
+c= 6& 0& 0& 266& 1652& 1617& 882& 392& 147& 42& 7& 0& 0& 0& 0& 0& 0\\
+c= 7& 0& 1& 1106& 2716& 1652& 672& 224& 56& 8& 0& 0& 0& 0& 0& 0& 0\\
+c= 8& 0& 36& 2268& 2646& 1080& 324& 72& 9& 0& 0& 0& 0& 0& 0& 0& 0\\
+c= 9& 0& 210& 2640& 1605& 450& 90& 10& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
+c=10& 0& 462& 1815& 605& 110& 11& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
+c=11& 0& 495& 726& 132& 12& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
+c=12& 0& 286& 156& 13& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
+c=13& 0& 91& 14& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
+c=14& 0& 15& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
+c=15& 1& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
 \hline
 \end{tabular}
 }
 
 \normalsize
 
-The corresponding joint probabilities are obtained by dividing these integers by $2^{n-1}=2^{14}=16384$, for instance $P(C=5, L=6)=420/16384=0.026$. The highest joint probability is $P(C=8, L=3)=1470/16384=0.090$. It is also seen that a hight proportion of the joint probabilities consists of zeroes, and except for some very small numbers the joint probabilities are concentrated within a narrow band sloping band. These are fairly general phenomena. For comparison the joint distribution for $n = 15$ is also shown below for $p = 0.6$, a case where observations tend to stay above the midline. These probabilities are still shown in the "times" representation, they are multiplied by $2^{n-1}=16384$, and are shown with one decimal digit:
+The corresponding joint probabilities are obtained by dividing these integers by $2^{n-1}=2^{15}=32768$, for instance $P(C=5, L=6)=741/32768=0.023$. The highest joint probability is $P(C=7, L=4)=2716/32768=0.083$. It is also seen that a hight proportion of the joint probabilities consists of zeroes, and except for some very small numbers the joint probabilities are concentrated within a narrow  sloping band. These are fairly general phenomena. For comparison the joint distribution for $n = 16$ is also shown below for $p = 0.6$, a case where observations tend to stay above the midline. These probabilities are still shown in the "times" representation, they are multiplied by $2^{n-1}=32768$, and are shown with one decimal digit:
 
 \tiny{
-\begin{tabular}{l | l l l l l l l l l l l l l l l}
+\begin{tabular}{l | l l l l l l l l l l l l l l l l}
 \hline
-p=0.7&l=1&l=2&l=3&l=4&l=5&l=6&l=7&l=8&l=9&l=10&l=11&l=12&l=13&l=14&l=15\\
+p=0.7&l=1&l=2&l=3&l=4&l=5&l=6&l=7&l=8&l=9&l=10&l=11&l=12&l=13&l=14&l=15&l=16\\
 \hline
-c=0&0&0&0&0&0&0&0&0&0&0&0&0&0&0&7.7\\
-c=1&0&0&0&0&0&0&0&1.5&1.8&2.3&3.2&4.7&6.9&10.3&0\\
-c=2&0&0&0&0&1.1&11.4&29.3&33.7&31.8&29.7&26.8&21.9&13.8&0&0\\
-c=3&0&0&0&3.0&41.7&91.7&105.9&87.8&70.3&51.9&32.6&13.9&0&0&0\\
-c=4&0&0&0.9&99.2&318.3&354.3&260.6&172.1&101.9&49.2&15.1&0&0&0&0\\
-c=5&0&0&39.3&468.8&670.6&483.1&278.4&141.5&57.1&14.1&0&0&0&0&0\\
-c=6&0&0&319.2&1180.3&948.8&485.7&210.1&70.9&14.2&0&0&0&0&0&0\\
-c=7&0&6.0&836.1&1324.0&679.9&257.7&75.4&12.9&0&0&0&0&0&0&0\\
-c=8&0&68.5&1289.2&994.7&341.5&86.5&12.6&0&0&0&0&0&0&0&0\\
-c=9&0&196.4&991.5&402.9&89.8&11.5&0&0&0&0&0&0&0&0&0\\
-c=10&0&267.1&466.8&100.8&11.3&0&0&0&0&0&0&0&0&0&0\\
-c=11&0&170.3&106.7&10.5&0&0&0&0&0&0&0&0&0&0&0\\
-c=12&0&61.2&10.6&0&0&0&0&0&0&0&0&0&0&0&0\\
-c=13&0&10.5&0&0&0&0&0&0&0&0&0&0&0&0&0\\
-c=14&0.8&0&0&0&0&0&0&0&0&0&0&0&0&0&0\\
+c=0&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0&9.3\\
+c=1&0&0&0&0&0&0&0&0.7&1.6&1.9&2.6&3.8&5.6&8.3&12.4&0\\
+c=2&0&0&0&0&0&7.5&22.8&41.2&39.3&37.5&35.3&31.9&26.2&16.5&0&0\\
+c=3&0&0&0&0.7&28.0&88.6&130.0&121.0&102.2&82.8&61.6&38.9&16.6&0&0&0\\
+c=4&0&0&0&63.4&337.8&485.0&423.3&302.3&202.2&120.6&58.5&18.0&0&0&0&0\\
+c=5&0&0&15.9&451.3&947.6&845.0&550.2&323.0&166.1&67.6&16.7&0&0&0&0&0\\
+c=6&0&0&234.2&1619.3&1784.1&1098.1&557.9&245.0&83.5&16.8&0&0&0&0&0&0\\
+c=7&0&0.7&900.4&2439.2&1660.7&764.3&295.9&87.9&15.2&0&0&0&0&0&0&0\\
+c=8&0&28.7&1977.6&2518.8&1138.4&386.4&99.8&14.8&0&0&0&0&0&0&0&0\\
+c=9&0&160.0&2159.1&1427.7&444.0&101.6&13.2&0&0&0&0&0&0&0&0&0\\
+c=10&0&369.8&1535.6&553.4&118.8&12.8&0&0&0&0&0&0&0&0&0&0\\
+c=11&0&379.0&582.9&114.6&11.7&0&0&0&0&0&0&0&0&0&0&0\\
+c=12&0&223.9&127.4&11.5&0&0&0&0&0&0&0&0&0&0&0&0\\
+c=13&0&68.2&10.9&0&0&0&0&0&0&0&0&0&0&0&0&0\\
+c=14&0&11.3&0&0&0&0&0&0&0&0&0&0&0&0&0&0\\
+c=15&0.7&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0\\
 \hline
 \end{tabular}
 }
@@ -169,21 +155,35 @@ There are at present two main limitations. First, in applications in statistical
 % ToRe: ta med her en referanse til 
 % https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0113825 
 % eller en annen artikkel der dette er beskrevet mer i detalj
-into two parts of equal size. The useful observations are then necessarily an even number, say $n=2m$,  the useful observations above the median is a subset of size m, and all such subsets are equally probable. To find the number of such subsets for each combination of the number of crossing and the longest run is in fact tractable if it is generalized to all subsets, not necessarily of size $m=n/2$, and an iterative procedure resembling the procedure implemented in `crossrunbin` has been developed. The procedure has, due to the large number of such subsets, higher algorithmic complexity in terms if computation time and storage requirements, and it has so far only been possible to use it up to $n=64$.
+into two parts of equal size. The useful observations are then necessarily an even number, say $n=2m$,  the useful observations above the median is a subset of size $m$, and all such subsets are equally probable. To find the number of such subsets for each combination of the number of crossing and the longest run is in fact tractable if it is generalized to all subsets, not necessarily of size $m=n/2$, and an iterative procedure resembling the procedure implemented in \code{crossrunbin} has been developed. The procedure has, due to the large number of such subsets, higher algorithmic complexity in terms of computation time and storage requirements, and it has so far only been possible to use it up to $n=64$.
 
 Preliminary investigations seem to indicate that the difference from the case of a predetermined midline is smaller for longer sequences. A function \code{crossrunem} is planned for inclusion in an update of the package \code{crossrun}. 
 
 Another important limitation is that the iterative procedure does not apply for autocorrelated time series. Here also, work is in progress in a simple autocorrelation model in which the probabilities of "success" and "failure" in each observation may depend on the previous observation only, and a function \code{crossrunauto} is planned for inclusion in a future update. The practical value of this procedure is likely to be limited  since decision rules based on the number of crossings and the longest run are probably not particularly useful for autocorrelated series, but at least the procedure may be used to investigate the extent of the problem.
 
-A third limitation is that the code has so far only been checked for $n \leq 100$. In that range it seems to work well. It has been checked with manual computations for $n \leq 6$, and with 100,000 simulations for $n=100$. Specifically, the mean and standard deviations for both C and L have been computed, as well as the mean of $C \cdot L$ and also the cumulative distribution functions of C and L separately, with no substantial deviations. It has also been checked for $n \leq 100$ that the marginal distribution of C computed from the joint distribion agrees with the correct binomial distribution in the symmetric case. These last investigations were, in fact, what pointed to the necessity to base the code on Rmpfr. The performance of the procedure has not, however, so far been checked for $n>100$. For applications to statistical process control $n \leq 100$ should be sufficient in most cases, but other applications may require higher n.
+A third limitation is that the code has so far only been checked for $n \leq 100$. In that range it seems to work well. It has been checked with manual computations for $n \leq 6$, and with 100,000 simulations for $n=100$. Specifically, the mean and standard deviations for both $C$ and $L$ have been computed, as well as the mean of $C \cdot L$ and also the cumulative distribution functions of $C$ and $L$ separately, with no substantial deviations. It has also been checked for $n \leq 100$ that the marginal distribution of C computed from the joint distribion agrees with the correct binomial distribution in the symmetric case. These last investigations were, in fact, what pointed to the necessity to base the code on \code{Rmpfr}. The performance of the procedure has not, however, so far been checked for $n>100$. For applications to statistical process control $n \leq 100$ should be sufficient in most cases, but other applications may require higher $n$.
 
 \section{Conclusions}
  
 The \code{crossrun} package includes functions for computing the probabilities of the joint distribution of longest run and number of crossings in random data series. To our knowledge, this distribution has not been studied before.
  
-The ability to calculate exact probabilities for the joint distribution allows for the development of better prediction limits for longest run and crossings in random data series. In turn, this allows for better separation of signal and noise, i.e. random and non-random variation, in, for example, statistical process control, gaming fraud detection, or search for extraterrestrial life, to name a few.
+The ability to calculate exact probabilities for the joint distribution allows for the development of better prediction limits for longest run and crossings in random data series. In turn, this allows for better separation of signal and noise, i.e. random and non-random variation, in, for example, statistical process control and gaming fraud detection.
+% jeg vil i utgangspunktet anta at det er best å begrense til tilfeller der det finnes minst en referanse til bruk av C og L, eller i hvert fall andre fremgangsmåter i bruk på området beslektet med det som brukes i SPC. Ikke nødvendigvis ta med referanse i Conclusions, men i hvert fall kunne vise til den i korrespondanse med tidsskriftet. Hvis det er tilfelle innen gaming fraud detection kan vi godt beholde det. Search for estraterrestrial life er antagelig et litt prematurt område, mens leting etter eksoplaneter av ulik størrelse og avstand fra stjernen er et område der det faktisk er viktig å skille mellom signal og støy. Men der er det antagelig allerede utviklet mer avanserte metoder som utnytter langt mer data enn en enkelt tidsrekke.
 
-\section{Appendix 1: R code for the iteration procedure}
+\section{Appendix 1: Details on the times representation}
+
+The times representation of the joint distribution is defined as $$\text{Pt}_n ( C=c, L=l \mid S=1 ) = m^{n-1} \cdot P_n ( C=c, L=l \mid S=1 )$$ where $m$ is a multiplier normally set as $m=2$. The case of conditioning on $S=0$, starting below the midline, is similar. Denoting the success probability as $p$ and the failure probability as $q=1-p$ the main decomposition for probabilities is $$P_n ( C=c, L=l \mid S=1) = p^{n-1} \cdot P_n ( C=c, L=l \mid S=1, F=1)+$$
+
+$$ \sum_{f=2}^n p^{f-2} \cdot  q \cdot P_n ( C=c, L=l \mid S=1, F=f)$$
+where the first term conditions on $F=1$, by convention corresponding to no crossing, and each of the remaining terms conditions on $F=f, f =2, \ldots , n$ corresponding to the first crossing from $f-1$ to $f$. The corresponding decomposition in the times representation may be written as $$\text{Pt}_n ( C=c, L=l \mid S=1) = (pm)^{n-1} \cdot P_n ( C=c, L=l \mid S=1, F=1) +$$
+$$ \sum_{f=2}^n (pm)^{f-2} \cdot  qm \cdot m^{n-f} \cdot P_n ( C=c, L=l \mid S=1, F=f)$$
+
+In the first term for no crossing the probability is simply 1 if $C=0, L=n$ and 0 otherwise. This term is the same in the times representation except for the initial factor in which $p^{n-1}$ is replaced by $(pm)^{n-1}$. In the symmetric case both $pm$ and $qm$ are equal to 1, thus the initial factor is 1 and the term as a whole is actually simpler in the times representation in the symmetric case.
+
+In the remaining terms, for the first crossing from $f-1$ to $f$, there is first a factor $(pm)^{f-2} \cdot  qm$ that is similar to the corresponding factor in the original representation, except that $p$ is replaced by $pm$ and $q$ by $qm$. Again this first factor is actually 1 in the symmetric case. The rest of the term is $m^{n-f} \cdot P_n ( C=c, L=l \mid S=1, F=f)$. As shown previously, the probabilities $P_n ( C=c, L=l \mid S=1, F=f)$ are determined by the joint distribution $P_{n+1-f} ( C=c', L=l' \mid S=0)$ for the observations starting at the end of the first crossing. Here we condition on the opposite starting value $S=0$ since this last part of the sequence starts just where the first crossing has occurred. As to the main part of the term $P_n ( C=c, L=l \mid S=1, F=f)$ we more specifically have seen that it is determined by the joint distribution $P_{n+1-f} ( C=c', L=l' \mid S=0)$ by simple operations in terms of additions and reshuffling only. The corresponding joint distribution in the times representation is $$\text{Pt}_{n+1-f} ( C=c', L=l' \mid S=0)=m^{(n+1-f)-1} \cdot P_{n+1-f} ( C=c', L=l' \mid S=0)$$ where the leading factor $m^{(n+1-f)-1}=m^{n-f}$ is exactly the same as the leading factor in $m^{n-f} \cdot P_n ( C=c, L=l \mid S=1, F=f)$. Therefore the term $$m^{n-f} \cdot P_n ( C=c, L=l \mid S=1, F=f)$$ is determined by the joint distribution $$\text{Pt}_{n+1-f} ( C=c', L=l' \mid S=0)$$ on the times scale by exactly the same additions and reshufflings as apply on the original probability scale.
+
+
+\section{Appendix 2: R code for the iteration procedure}
 
 The iterative procedure is coded in the function crossrunbin. 
 
@@ -289,18 +289,6 @@ crossrunbin <- function(nmax   = 100,
 } # end function crossrunbin
 \end{example}
 
-
-\section{Appendix 2: Details on the times representation}
-
-The times representation of the joint distribution is defined as $$\text{Pt}_n ( C=c, L=l \mid S=1 ) = m^{n-1} \cdot P_n ( C=c, L=l \mid S=1 )$$ where $m$ is a multiplier normally set as $m=2$. The case of conditioning on $S=0$, starting below the midline, is similar. Denoting the success probability as $p$ and the failure probability as $q=1-p$ the main decomposition for probabilities is $$P_n ( C=c, L=l \mid S=1) = p^{n-1} \cdot P_n ( C=c, L=l \mid S=1, F=1)+$$
-
-$$ \sum_{f=2}^n p^{f-2} \cdot  q \cdot P_n ( C=c, L=l \mid S=1, F=f)$$
-where the first term conditions on $F=1$, by convention corresponding to no crossing, and each of the remaining terms conditions on $F=f, f =2, \ldots , n$ corresponding to the first crossing from $f-1$ to $f$. The corresponding decomposition in the times representation may be written as $$\text{Pt}_n ( C=c, L=l \mid S=1) = (pm)^{n-1} \cdot P_n ( C=c, L=l \mid S=1, F=1) +$$
-$$ \sum_{f=2}^n (pm)^{f-2} \cdot  qm \cdot m^{n-f} \cdot P_n ( C=c, L=l \mid S=1, F=f)$$
-
-In the first term for no crossing the probability is simply 1 if $C=0, L=n$ and 0 otherwise. This term is the same in the times representation except for the initial factor in which $p^{n-1}$ is replaced by $(pm)^{n-1}$. In the symmetric case both $pm$ and $qm$ are equal to 1, thus the initial factor is 1 and the term as a whole is actually simpler in the times representation in the symmetric case.
-
-In the remaining terms, for the first crossing from $f-1$ to $f$, there is first a factor $(pm)^{f-2} \cdot  qm$ that is similar to the corresponding factor in the original representation, except that $p$ is replaced by $pm$ and $q$ by $qm$. Again this first factor is actually 1 in the symmetric case. The rest of the term is $m^{n-f} \cdot P_n ( C=c, L=l \mid S=1, F=f)$. As shown previously, the probabilities $P_n ( C=c, L=l \mid S=1, F=f)$ are determined by the joint distribution $P_{n+1-f} ( C=c', L=l' \mid S=0)$ for the observations starting at the end of the first crossing. Here we condition on the opposite starting value $S=0$ since this last part of the sequence starts just where the first crossing has occurred. As to the main part of the term $P_n ( C=c, L=l \mid S=1, F=f)$ we more specifically have seen that it is determined by the joint distribution $P_{n+1-f} ( C=c', L=l' \mid S=0)$ by simple operations in terms of additions and reshuffling only. The corresponding joint distribution in the times representation is $$\text{Pt}_{n+1-f} ( C=c', L=l' \mid S=0)=m^{(n+1-f)-1} \cdot P_{n+1-f} ( C=c', L=l' \mid S=0)$$ where the leading factor $m^{(n+1-f)-1}=m^{n-f}$ is exactly the same as the leading factor in $m^{n-f} \cdot P_n ( C=c, L=l \mid S=1, F=f)$. Therefore the term $$m^{n-f} P_n ( C=c, L=l \mid S=1, F=f)$$ is determined by the joint distribution $$\text{Pt}_{n+1-f} ( C=c', L=l' \mid S=0)$$ on the times scale by exactly the same additions and reshufflings as apply on the original probability scale.
 
 \section{Appendix 3: Detailed computation, illustrated for $n = 7$}
 
