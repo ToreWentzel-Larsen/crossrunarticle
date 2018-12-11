@@ -1,4 +1,4 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -11,6 +11,13 @@ J.~Anh{\o}j.
   compare run chart rules on simulated data series.
 \newblock \emph{PLoS ONE}, 10\penalty0 (3):\penalty0 e0121349, 2015.
 \newblock URL \url{https://doi.org/10.1371/journal.pone.0121349}.
+
+\bibitem[Anh{\o}j and Olesen(2014)]{Anhoej:2014}
+J.~Anh{\o}j and A.~V. Olesen.
+\newblock Run charts revisited: A simulation study of run chart rules for
+  detection of non-random variation in health care processes.
+\newblock \emph{PLoS ONE}, 9\penalty0 (11):\penalty0 e113825, 2014.
+\newblock URL \url{https://doi.org/10.1371/journal.pone.0113825}.
 
 \bibitem[Fazekas et~al.(2010)Fazekas, Kar{\'a}csony, and Libor]{Fazekas:2010}
 I.~Fazekas, Z.~Kar{\'a}csony, and Z.~Libor.
