@@ -1,24 +1,24 @@
 % !TeX root = RJwrapper.tex
-\title{crossrun: Joint Distribution for Number of Crossings and Longest Run in Independent Bernoulli observations}
+\title{The \CRANpkg{crossrun} package: Joint Distribution for Number of Crossings and Longest Run in Independent Bernoulli observations}
 \author{by Tore Wentzel-Larsen and Jacob Anh{\o}j}
 
 \maketitle
 
 \abstract{
-An abstract of less than 150 words.
+The package \CRANpkg{crossrun} computes the joint distribution of the number of crossings and the longest run in a sequence of independent Bernoulli observations. The main intended application is statistical process control where the joint distribution may be used for systematic investigation, and possibly refinement, of existing rules for distinguishing between signal and noise. While the \CRANpkg{crossrun} vignette is written to assist in practical use, this article gives a hands-on explanation of \emph{why} the procedures works. The article also includes a discussion of limitations of the present version of \CRANpkg{crossrun} together with an outline of ongoing work to meet these limitations. There is more to come, and it is necessary to grasp the basic ideas behind the procedure implemented both to understand these planned extensions, and how presently implemented rules in statistical process control, based on the number of crossings and the longest run, may be refined.
 }
 
 \section{Introduction}
 
 The setting is defined by a number of independent observations from a Bernoulli distribution with the same success probability. In statistical process control, our main intended application, this may be the useful observations in a runchart, recording values above and below the median from previous data, disregarding any observations equal to the median \citep{Anhoej:2015}. 
 
-The focus of the \code{crossrun} package is the joint distribution of number of crossings, $C$, and the length of the longest run, $L$, in random data sequences. A run is a sequence of successes or failures, delimited by a different observation or the start or end of the entire sequence. A crossing is two adjacent different observations. 
+The focus of the \CRANpkg{crossrun} package is the joint distribution of number of crossings, $C$, and the length of the longest run, $L$, in random data sequences. A run is a sequence of successes or failures, delimited by a different observation or the start or end of the entire sequence. A crossing is two adjacent different observations. 
 
-Figure~\ref{figure:fig1}: illustrates runs and crossings in a run chart with 24 random observations. Observations above and below the median represent successes and failures respectively.
+Figure~\ref{figure:fig1}: illustrates runs and crossings in a run chart with 20 random observations. Observations above and below the median represent successes and failures respectively.
 
 \begin{figure}[htbp]
   \centering
-  \caption{A runchart with $n=24$ data points. The longest run consists of observations 12-16 below the median. The length of the longest run is $L=5$. The number of crossings of the median is $C=11$.}
+  \caption{A runchart with $n=20$ data points. The longest run consists of observations 3-7 above the median. The length of the longest run is $L=5$. The number of crossings of the median is $C=10$.}
   \label{figure:fig1}
   \includegraphics{fig1}
 \end{figure}
@@ -37,9 +37,9 @@ This conditioning on the first observation is an essential part of the procedure
 
 It is important to underline that the conditioning variables $S$ and $F$ are not parameters of the distribution but useful constructions that help break down the iterative procedure in manageable parts.
 
-This article first describes the setting for the iterative computation procedure and its initial stage, next introduces conditioning on the starting position and partitioning on the position of the first crossing, and the joint distribution of the number of crossings and the longest run conditional on these variables. The computation procedure is different in two cases that are subsequently described. 
+This article first describes the setting for the iterative computation procedure and its initial stage. Next we introduce conditioning on the starting position and partitioning on the position of the first crossing. Finally, the joint distribution of the number of crossings and the longest run conditional on these variables is given. The computation procedure is different in two cases that are subsequently described. 
 
-After the exposition of the iterative procedure follows a brief comment on the simpler symmetric case, and the precision of the procedure is discussed. The resulting joint distribution is described in a simple case, and procedures for checking are briefly commented. Next follows a section on limitations of the procedures in \code{crossrun} and a brief description of ongoing work to address these limitations. Finally, a Conclusions section summarizes the article. Three appendices are included, one giving details on the "times" representation in which the joint distributions are actually stored, as described in the section on precision, one with code for the main function \code{crossrunbin} and one showing the details in the iterative procedure for a small value of $n$. 
+After the exposition of the iterative procedure follows a brief comment on the simpler symmetric case, and the precision of the procedure is discussed. The resulting joint distribution is described in a simple case, and procedures for checking are briefly commented. Next follows a section on limitations of the procedures in \CRANpkg{crossrun} and a brief description of ongoing work to address these limitations. Finally, a Conclusions section summarizes the article. Three appendices are included, one giving details on the "times" representation in which the joint distributions are actually stored, as described in the section on precision, one with code for the main function \code{crossrunbin} and one showing the details in the iterative procedure for a small value of $n$. 
 
 \section{The conditional probabilities with one observation}
 
@@ -55,7 +55,7 @@ $$P_n (F=f \mid S=1) = p^{f-2} \cdot q, P_n (F=f \mid S=0) =q^{f-2} \cdot p, f=2
 
 Partitioning on  $F$ we have
 
-$$P_n (L=l,C=c \mid S=1) = \sum_{f=1}^n P_n(L=l,C=c \mid S=1,F=f) \cdot P_n (F=f \mid S=1)$$ where, as shown in the previous section, $P_n (F=f \mid S=1) =p^{f-2}q$ if $f \geq 2$ and $P_n (F=1 \mid S=1) = p^{n-1}$. The formula for $P_n (L=l,C=c \mid S=0)$ is the same, just interchanging $p$ and $q$. This implies that the joint probabilities of $C$ and $L$ conditional on $S$ may be computed if it is possible to compute all the joint probabilities of $C$ and $L$ conditional on $S$ and $F$. This is the next step.
+$$P_n (L=l,C=c \mid S=1) = \sum_{f=1}^n P_n(L=l,C=c \mid S=1,F=f) \cdot P_n (F=f \mid S=1)$$ where, as shown in the previous section, $P_n (F=f \mid S=1) =p^{f-2}q$ if $f \geq 2$ and $P_n (F=1 \mid S=1) = p^{n-1}$. The formulas for $P_n (L=l,C=c \mid S=0)$ are the same, just interchanging $p$ and $q$. This implies that the joint probabilities of $C$ and $L$ conditional on $S$ may be computed if it is possible to compute all the joint probabilities of $C$ and $L$ conditional on $S$ and $F$. This is the next step.
 
 \section{Joint distribution conditional on starting position and first crossing}
 
@@ -87,7 +87,7 @@ For $p=\frac{1}{2}$ there is a symmetry between crossings up or down, and betwee
 
 \section{Precision considerations}
 
-To enhance precision, computations have been performed in the R package \code{Rmpfr} \citep{Rmpfr}, an R interface to the GNU MPFR library \citep{FouLHLPZ-2007}. Preliminary investigations pointed to precision problems above values about 50 for sequence length $n$ without this increased precision, but no such problems up to $n=100$ when using \code{Rmpfr}. To further enhance precision, probabilities have been multiplied by $m^{n-1}$ where $m$ is a multiplier with default value 2. Thereby very small numbers are avoided, at least to some extent, and the numbers computed are integers in the symmetric case. The joint probabilities for $n=16$ are shown below in this representation:
+To enhance precision, computations have been performed in the R package \CRANpkg{Rmpfr} \citep{Rmpfr}, an R interface to the GNU MPFR library \citep{FouLHLPZ-2007}. Preliminary investigations pointed to precision problems above values about 50 for sequence length $n$ without this increased precision, but no such problems up to $n=100$ when using \CRANpkg{Rmpfr}. To further enhance precision, probabilities have been multiplied by $m^{n-1}$ where $m$ is a multiplier with default value 2. Thereby very small numbers are avoided, at least to some extent, and the numbers computed are integers in the symmetric case. The joint probabilities for $n=16$ are shown below in this representation:
 
 \tiny{
 \begin{tabular}{l | l l l l l l l l l l l l l l l l}
@@ -152,15 +152,15 @@ The iterative procedure has been generalized to time series where the success pr
 There are at present two main limitations. First, in applications in statistical process control when observations are categorized as above or below a midline, the iterative procedure presupposes that the midline is determined from previous data, usually the median. If the midline is the median in the same data set the procedure does not apply. Work is, however, underway to tackle this case. Briefly, the median divides the useful observations (observations not on the median, see \citep{Anhoej:2014} for details) 
 into two parts of equal size. The useful observations are then necessarily an even number, say $n=2m$,  the useful observations above the median is a subset of size $m$, and all such subsets are equally probable. To find the number of such subsets for each combination of the number of crossing and the longest run is in fact tractable if it is generalized to all subsets, not necessarily of size $m=n/2$, and an iterative procedure resembling the procedure implemented in \code{crossrunbin} has been developed. The procedure has, due to the large number of such subsets, higher algorithmic complexity in terms of computation time and storage requirements, and it has so far only been possible to use it up to $n=64$.
 
-Preliminary investigations seem to indicate that the difference from the case of a predetermined midline is smaller for longer sequences. A function \code{crossrunem} is planned for inclusion in an update of the package \code{crossrun}. 
+Preliminary investigations seem to indicate that the difference from the case of a predetermined midline is smaller for longer sequences. A function \code{crossrunem} is planned for inclusion in an update of the package \CRANpkg{crossrun}. 
 
 Another important limitation is that the iterative procedure does not apply for autocorrelated time series. Here also, work is in progress in a simple autocorrelation model in which the probabilities of "success" and "failure" in each observation may depend on the previous observation only, and a function \code{crossrunauto} is planned for inclusion in a future update. The practical value of this procedure is likely to be limited  since decision rules based on the number of crossings and the longest run are probably not particularly useful for autocorrelated series, but at least the procedure may be used to investigate the extent of the problem.
 
-A third limitation is that the code has so far only been checked for $n \leq 100$. In that range it seems to work well. It has been checked with manual computations for $n \leq 6$, and with 100,000 simulations for $n=100$. Specifically, the mean and standard deviations for both $C$ and $L$ have been computed, as well as the mean of $C \cdot L$ and also the cumulative distribution functions of $C$ and $L$ separately, with no substantial deviations. It has also been checked for $n \leq 100$ that the marginal distribution of C computed from the joint distribion agrees with the correct binomial distribution in the symmetric case. These last investigations were, in fact, what pointed to the necessity to base the code on \code{Rmpfr}. The performance of the procedure has not, however, so far been checked for $n>100$. For applications to statistical process control $n \leq 100$ should be sufficient in most cases, but other applications may require higher $n$.
+A third limitation is that the code has so far only been checked for $n \leq 100$. In that range it seems to work well. It has been checked with manual computations for $n \leq 6$, and with 100,000 simulations for $n=100$. Specifically, the mean and standard deviations for both $C$ and $L$ have been computed, as well as the mean of $C \cdot L$ and also the cumulative distribution functions of $C$ and $L$ separately, with no substantial deviations. It has also been checked for $n \leq 100$ that the marginal distribution of C computed from the joint distribion agrees with the correct binomial distribution in the symmetric case. These last investigations were, in fact, what pointed to the necessity to base the code on \CRANpkg{Rmpfr}. The performance of the procedure has not, however, so far been checked for $n>100$. For applications to statistical process control $n \leq 100$ should be sufficient in most cases, but other applications may require higher $n$.
 
 \section{Conclusions}
  
-The \code{crossrun} package includes functions for computing the probabilities of the joint distribution of longest run and number of crossings in random data series. To our knowledge, this distribution has not been studied before.
+The \CRANpkg{crossrun} package includes functions for computing the probabilities of the joint distribution of longest run and number of crossings in random data series. To our knowledge, this distribution has not been studied before.
  
 The ability to calculate exact probabilities for the joint distribution allows for the development of better prediction limits for longest run and crossings in random data series. In turn, this allows for better separation of signal and noise, i.e. random and non-random variation in statistical process control and possibly also in other areas of application.
 
@@ -580,7 +580,7 @@ c= 6& 1& 0& 0& 0& 0& 0& 0\\
 
 In these calculations we have tacitly used that the joint distributions are the same whether the sequence starts above or below the midline. This is correct in the symmetric case. In non-symmetric cases it is necessary to distinguish between sequences starting above or below the midline, this is precisely why the computations are somewhat simpler in the symmetric case.
 
-\bibliography{crossrun}
+\bibliography{crossrunarticle}
 
 
 
