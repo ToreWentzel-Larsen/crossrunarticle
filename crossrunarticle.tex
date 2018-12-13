@@ -69,6 +69,16 @@ Case 1: $f-1 \geq n+1-f$
 
 Case 2: $f-1<n+1-f$
 
+The two cases are illustrated in Figure~\ref{figure:fig2} below. In both cases the observations (red) from the end of the first crossing constitute a runchart of its own, only shorter and starting on the opposite side. In Case 1 (top), the initial run of $f-1=14$ observations is longest, $l=f-1=14$. The number of crossings in the last $n+1-f=10$ observations is between 0 and 9, and the total number of crossings is one more, $1 \leq c \leq 10$. In Case 2 (bottom) the initial run of $f-1=8$ observations may or may not be longest, $l \geq 8$. It is a longest run precisely if no run within the last $n+1-f=16$ (red) observations is longer than 8. If all observations in the last 16 observations are below the median, $l=16$, thus for the whole sequence $8 \leq l \leq 16$. The number of crossings in the last part (red, 16 observations) is between 0 and $16-1=15$, and the number of crossings in the whole sequence is one more, $1 \leq c \leq 16$. What is shown here in an example is the core of the general argument that follows.
+
+\begin{figure}[htbp]
+  \centering
+  \caption{Two runcharts with $n=24$ data points, both starting above the median. Top: $f=15$, the initial run is necessarily longest. Bottom: $f=9$, the initial run may or may not be longest.}
+  \label{figure:fig2}
+  \includegraphics{fig2}
+\end{figure}
+
+
 \section{Case 1, at least as many observations before the first crossing as thereafter}
 
 This is the simplest case. Here, the first $f-1$ observations constitute a run of length $f-1$, and no run in the last $n+f-1$ observations may be longer than that. Therefore, the longest run is $f-1$, and the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the vertical strip $l=f-1$. And, in fact, to only a part of this strip. First, there is at least one crossing, from time $f-1$ to $f$. Also, any further crossings are within the last $n+1-f$ observations, and may be any number between $0$ and $(n+1-f) - 1$. The total number of crossings may therefore be any number between $1$ and $n+1-f$, which means that the non-zero probabilities $P_n (C=c,L=l \mid S=1,F=f)$ are confined to the strip $l=f-1, 1 \leq c \leq n+1-f$. 
@@ -90,6 +100,7 @@ For $p=\frac{1}{2}$ there is a symmetry between crossings up or down, and betwee
 To enhance precision, computations have been performed in the R package \CRANpkg{Rmpfr} \citep{Rmpfr}, an R interface to the GNU MPFR library \citep{FouLHLPZ-2007}. Preliminary investigations pointed to precision problems above values about 50 for sequence length $n$ without this increased precision, but no such problems up to $n=100$ when using \CRANpkg{Rmpfr}. To further enhance precision, probabilities have been multiplied by $m^{n-1}$ where $m$ is a multiplier with default value 2. Thereby very small numbers are avoided, at least to some extent, and the numbers computed are integers in the symmetric case. The joint probabilities for $n=16$ are shown below in this representation:
 
 \tiny{
+\strong{
 \begin{tabular}{l | l l l l l l l l l l l l l l l l}
 \hline
 n=16&l=1&l=2&l=3&l=4&l=5&l=6&l=7&l=8&l=9&l=10&l=11&l=12&l=13&l=14&l=15&l=16\\
@@ -113,12 +124,14 @@ c=15& 1& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0& 0\\
 \hline
 \end{tabular}
 }
+}
 
 \normalsize
 
-The corresponding joint probabilities are obtained by dividing these integers by $2^{n-1}=2^{15}=32768$, for instance $P(C=5, L=6)=741/32768=0.023$. The highest joint probability is $P(C=7, L=4)=2716/32768=0.083$. It is also seen that a hight proportion of the joint probabilities consists of zeroes, and except for some very small numbers the joint probabilities are concentrated within a narrow  sloping band. These are fairly general phenomena. For comparison the joint distribution for $n = 16$ is also shown below for $p = 0.6$, a case where observations tend to stay above the midline. These probabilities are still shown in the "times" representation, they are multiplied by $2^{n-1}=32768$, and are shown with one decimal digit:
+The corresponding joint probabilities are obtained by dividing these integers by $2^{n-1}=2^{15}=32768$, for instance $P(C=5, L=6)=741/32768=0.023$. The highest joint probability is $P(C=7, L=4)=2716/32768=0.083$. It is also seen that a hight proportion of the joint probabilities consists of zeroes, and except for some very small numbers the joint probabilities are concentrated within a narrow sloping band, as also commented in the \CRANpkg{crossrun} vignette, these are fairly general phenomena. For comparison the joint distribution for $n = 16$ is also shown below for $p = 0.6$, a case where observations tend to stay above the midline. These probabilities are still shown in the "times" representation, they are multiplied by $2^{n-1}=32768$, and are shown with one decimal digit:
 
 \tiny{
+\strong{
 \begin{tabular}{l | l l l l l l l l l l l l l l l l}
 \hline
 p=0.6&l=1&l=2&l=3&l=4&l=5&l=6&l=7&l=8&l=9&l=10&l=11&l=12&l=13&l=14&l=15&l=16\\
@@ -142,12 +155,19 @@ c=15&0.7&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0\\
 \hline
 \end{tabular}
 }
+}
  
 \normalsize
 
-\section{Limitations and planned extensions}
+\section{Generalization and applications}
 
 The iterative procedure has been generalized to time series where the success probability may vary, as long as the observations are assumed to be independent. This is implemented in a function \code{crossrunchange}. Here, the success probability is replaced by a sequence of probabilities, one for each observation.
+
+The joint distributions for the number of crossings and the longest run may be used to investigate,and possible refine, the Anhoej rules in statistical process control \citep{Anhoej:2014} , Table 1. While these rules have shown to be useful, they do not have quite monotone sensitivities and specificities and preliminary investigations seem to indicate that some improvement is possible. For such work access to the exact joint distributions has decisive advantages compared to simulations. 
+% her forsøkte jeg å få inn en referanse til vår artikkel i BMC Medical Research Methodology, men det kom feilmeldinger under kompilering av pdf. Uansett forsvant den figuren som viste ikke-monotonitet under reviewen fra denne artiklen.
+
+\section{Limitations and planned extensions}
+
 
 There are at present two main limitations. First, in applications in statistical process control when observations are categorized as above or below a midline, the iterative procedure presupposes that the midline is determined from previous data, usually the median. If the midline is the median in the same data set the procedure does not apply. Work is, however, underway to tackle this case. Briefly, the median divides the useful observations (observations not on the median, see \citep{Anhoej:2014} for details) 
 into two parts of equal size. The useful observations are then necessarily an even number, say $n=2m$,  the useful observations above the median is a subset of size $m$, and all such subsets are equally probable. To find the number of such subsets for each combination of the number of crossing and the longest run is in fact tractable if it is generalized to all subsets, not necessarily of size $m=n/2$, and an iterative procedure resembling the procedure implemented in \code{crossrunbin} has been developed. The procedure has, due to the large number of such subsets, higher algorithmic complexity in terms of computation time and storage requirements, and it has so far only been possible to use it up to $n=64$.
