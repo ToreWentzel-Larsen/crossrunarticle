@@ -11,6 +11,7 @@ seqfig <- function(n=24, midline=0, low=.5, high=1.5,
   y <- runif(n, -high, -low)
   y[up] <- runif(length(up), low, high)
   op <- par(mar = c(bottom = 0, left   = 0, top    = 0, right  = 0))
+  par(op)
   plot(x, y,
        axes = FALSE,
        type = "b",
@@ -23,12 +24,12 @@ seqfig <- function(n=24, midline=0, low=.5, high=1.5,
   par(op)
 } # end function seqfig
 seqfig(n=20, low=.3, high=1)
-# save as fig1.pdf, width=5, height=2
+# save as fig1.pdf, width=5, height=1
 
 # figure 2:
 seqfig2 <- function(n=24, f1=15, f2=9, midline=0, low=.5, high=1.5,
-                   cex1=3, colf="red", yout=.25,
-                   figseed=83938487) {
+                    cex1=3, colf="red", yout=.25,
+                    figseed=83938487) {
   x <- seq(n)
   set.seed(figseed+1)
   up1 <- c(1:(f1-1),sample((f1+1):n, size=floor((n+1-f1)/2)))
@@ -237,4 +238,3 @@ crossrunbinshow <- function (nmax = 100, prob = 0.5, mult = 2, prec = 120, print
 c7 <- crossrunbinshow(nmax=7)
 asNumeric(c7$pat[[7]])
 asNumeric(c7$pbt[[7]])
-
