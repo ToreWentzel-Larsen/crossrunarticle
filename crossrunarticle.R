@@ -10,8 +10,7 @@ seqfig <- function(n=24, midline=0, low=.5, high=1.5,
   up <- sample(1:n, size=floor(n/2))
   y <- runif(n, -high, -low)
   y[up] <- runif(length(up), low, high)
-  op <- par(mar = c(bottom = 0, left   = 0, top    = 0, right  = 0))
-  par(op)
+  par(mar = c(bottom = 0, left   = 0, top    = 0, right  = 0))
   plot(x, y,
        axes = FALSE,
        type = "b",
@@ -21,10 +20,9 @@ seqfig <- function(n=24, midline=0, low=.5, high=1.5,
        xlab = '')
   lines(x, rep(midline, n), col = 'grey40')
   text(x, y)
-  par(op)
 } # end function seqfig
 seqfig(n=20, low=.3, high=1)
-# save as fig1.pdf, width=5, height=1
+# save as fig1.pdf, width=5, height=2
 
 # figure 2:
 seqfig2 <- function(n=24, f1=15, f2=9, midline=0, low=.5, high=1.5,
@@ -39,7 +37,7 @@ seqfig2 <- function(n=24, f1=15, f2=9, midline=0, low=.5, high=1.5,
   up2 <- c(1:(f2-1),sample((f2+1):n, size=floor((n+1-f2)/2)))
   y2 <- runif(n, -high, -low)
   y2[up2] <- runif(length(up2), low, high)
-  op <- par(mar = c(bottom = 0, left = 0, top = 0, right = 0))
+  par(mar = c(bottom = 0, left = 0, top = 0, right = 0))
   par(mfrow=c(2,1))
   plot(x, y1,
        axes = FALSE,
@@ -78,7 +76,6 @@ seqfig2 <- function(n=24, f1=15, f2=9, midline=0, low=.5, high=1.5,
   text(x[1:(f2-1)], y2[1:(f2-1)])
   text(x[f2:n], y2[f2:n], labels=f2:n, col=colf)
   par(mfrow=c(1,1))
-  par(op)
 } # end function seqfig2
 seqfig2(n=24, f1=15, low=.3, high=1)
 # save as fig2.pdf, width=5, height=4
