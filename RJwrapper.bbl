@@ -1,4 +1,4 @@
-\begin{thebibliography}{6}
+\begin{thebibliography}{7}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -18,6 +18,14 @@ J.~Anh{\o}j and A.~V. Olesen.
   detection of non-random variation in health care processes.
 \newblock \emph{PLoS ONE}, 9\penalty0 (11):\penalty0 e113825, 2014.
 \newblock URL \url{https://doi.org/10.1371/journal.pone.0113825}.
+
+\bibitem[Anh{\o}j and Wentzel-Larsen(2018)]{Anhoej:2018}
+J.~Anh{\o}j and T.~Wentzel-Larsen.
+\newblock Sense and sensibility: on the diagnostic value of control chart rules
+  for detection of shifts in time series data.
+\newblock \emph{BMC Medical Research Methodology}, 18\penalty0 (1):\penalty0
+  100, 2018.
+\newblock URL \url{https://doi.org/10.1186/s12874-018-0564-0}.
 
 \bibitem[Fazekas et~al.(2010)Fazekas, Kar{\'a}csony, and Libor]{Fazekas:2010}
 I.~Fazekas, Z.~Kar{\'a}csony, and Z.~Libor.
