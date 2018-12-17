@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.12.7)  17 DEC 2018 08:33
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.12.7)  17 DEC 2018 08:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1421,16 +1421,6 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 7.91925pt on input line 131.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 6.25204pt on input line 131.
-
-Overfull \hbox (8.87656pt too wide) in paragraph at lines 158--160
-[]|  []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 158--160
-
- []
-
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
 (Font)              scaled to size 10.20004pt on input line 165.
 Package microtype Info: Character `textendash ' is missing
@@ -1439,12 +1429,12 @@ Package microtype Info: Character `textendash ' is missing
 Package microtype Info: Character `textemdash ' is missing
 (microtype)             in font `T1/zi4/m/n/10'.
 (microtype)             Ignoring protrusion settings for this character.
-[5] [6] [7] [8] [9] [10] [11] (./RJwrapper.bbl (./RJwrapper.brf)
+ [5] [6] [7] [8] [9] [10] [11] (./RJwrapper.bbl (./RJwrapper.brf)
 \tf@brf=\write6
 \openout6 = `RJwrapper.brf'.
 
- [12]))
-[13]
+
+[12])) [13]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 24.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 24.
  (./RJwrapper.aux)
@@ -1474,7 +1464,7 @@ ts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type
 ic/mathpazo/fplmr.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/u
 plb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on RJwrapper.pdf (13 pages, 182078 bytes).
+Output written on RJwrapper.pdf (13 pages, 182074 bytes).
 PDF statistics:
  259 PDF objects out of 1000 (max. 8388607)
  228 compressed objects within 3 object streams
