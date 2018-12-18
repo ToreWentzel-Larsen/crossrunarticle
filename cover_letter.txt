@@ -1,0 +1,15 @@
+Dear Editor,
+
+Please consider our article "The crossrun package: Joint Distribution for Number of Crossings and Longest Run in Independent Bernoulli observations" for publication in the R Journal.
+
+The article presents original work of the joint distribution of longest run and number of crossings in random data series and the implementation of algorithms for calculating the probabilities of the distribution in the crossrun R package.
+
+The main intended application is to help discriminate between random and non-random variation in statistical process control (SPC) charts. But many more uses may exist.
+
+SPC charts rely on statistical tests (rules) to tell random from non-random variation in time series data. Traditionally, with control charts, these rules are based on the distribution of data points relative to sigma limits placed 1, 2, and 3 standard deviations on either side of the centre line, which is often the mean from historical data. 
+
+Run charts, however, use rules that are based solely on the distribution of data points relative to the centre line, which is often the median. Several run chart rule sets are available but they all rely on runs analysis, which in turn rely on knowledge of the distribution of longest run and number of crossings in random data. While the distribution of crossings is binomial, no closed form distribution exists for the longest run. Furthermore, what is really of interest, is the joint distribution of these parameters. To our knowledge this has not been studied before, and we believe that the crossrun package is a major constribution to future SPC research.
+
+Kind regards
+
+Tore Wentzel-Larsen & Jacob Anhøj
