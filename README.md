@@ -1,1 +1,1 @@
-Ongoing work on an article describing the R package crossrun
+Preparatory work on an article describing the R package crossrun. The article has now been published in PLOS ONE, https://journals.plos.org/plosone/article/comments?id=10.1371/journal.pone.0223233 and featured in Science Trends, https://sciencetrends.com/improving-tools-for-quality-improvement-crossings-runs-and-crossrun/
